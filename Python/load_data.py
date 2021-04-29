@@ -1,0 +1,26 @@
+import pandas as pd
+
+# Load data
+data_lcps_ic = pd.read_csv("Data/lcps_ic_opnames.csv")
+data_nice_ic = pd.read_csv("Data/nice_ic_intake.csv")
+data_rivm_ic = pd.read_csv("Data/rivm_ic_opnames.csv", sep=';')
+
+# Inspect variable types
+data_lcps_ic.info()
+data_nice_ic.info()
+data_rivm_ic.info()
+
+# Transform date column from string to datetime
+data_lcps_ic.Datum = pd.to_datetime(data_lcps_ic.Datum, format='%d-%m-%Y')
+data_nice_ic.date = pd.to_datetime(data_nice_ic.date, format='%Y-%m-%d')
+data_rivm_ic.Date_of_statistics = pd.to_datetime(data_rivm_ic.Date_of_statistics, format='%Y-%m-%d')
+
+# Sort dataframes to get newest date first
+data_lcps_ic = data_lcps_ic.sort_values(by='Datum', ascending=False)
+data_nice_ic = data_nice_ic.sort_values(by='date', ascending=False)
+data_rivm_ic = data_rivm_ic.sort_values(by='Date_of_statistics', ascending=False)
+
+# Inspect differences in IC admission data among data sources
+data_lcps_ic.IC_Nieuwe_Opnames_COVID.head()
+data_nice_ic.IC_Intake.head()
+data_rivm_ic.IC_admission.head()
