@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="568604cf-4cee-4369-9848-49373eeb36dd" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/aws.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/rSettings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/lcps_ic_opnames.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/nice_age_IC.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/nice_exit_IC.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/nice_ic_intake.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/nice_treatment-time_IC.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/rivm_aantallen_gemeente.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/rivm_gedrag.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/rivm_ic_opnames.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/rivm_prevalentie.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/rivm_rioolwaterdata.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/rivm_uitgevoerde_testen.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/rivm_verpleeghuizen.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/rivm_ziekenhuis_ic_opnames_per_leeftijdsgroep.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/rivm_ziekenhuisopnames.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Python/load_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/main.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1rqCl7OAxSQwjTB3CEJY6wBUlqx" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="568604cf-4cee-4369-9848-49373eeb36dd" name="Default Changelist" comment="" />
+      <created>1619694380721</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1619694380721</updated>
+      <workItem from="1619694382067" duration="1687000" />
+      <workItem from="1619705476281" duration="8764000" />
+      <workItem from="1619724298637" duration="710000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+</project>
