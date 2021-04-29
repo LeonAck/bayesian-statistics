@@ -20,7 +20,13 @@ data_lcps_ic = data_lcps_ic.sort_values(by='Datum', ascending=False)
 data_nice_ic = data_nice_ic.sort_values(by='date', ascending=False)
 data_rivm_ic = data_rivm_ic.sort_values(by='Date_of_statistics', ascending=False)
 
+# Delete the newest day since it is not complete
+data_lcps_ic = data_lcps_ic.drop(0, axis=0)
+data_nice_ic = data_nice_ic.drop(427, axis=0)
+
 # Inspect differences in IC admission data among data sources
-data_lcps_ic.IC_Nieuwe_Opnames_COVID.head()
-data_nice_ic.IC_Intake.head()
-data_rivm_ic.IC_admission.head()
+data_lcps_ic.IC_Nieuwe_Opnames_COVID.head(10) #Het aantal patiënten met COVID-19 dat in 24 uur nieuw is opgenomen op de IC
+data_nice_ic.IC_Intake.head(10) #Aantal nieuwe patiënten met verdachte of bewezen COVID-19 status die per dag op de IC’s worden opgenomen
+data_rivm_ic.IC_admission.head(10) #RIVM haalt z'n data van het NICE, waarom het (lichtelijk) afwijkt is mij onbekend
+#De IC admission data van het LCPS lijkt een dag achter te lopen op die van het RIVM/NICE, waarom is mij onbekend
+#De IC admission data van het LCPS is consistent lager dan die van het RIVM/NICE, waarom is mij onbekend
