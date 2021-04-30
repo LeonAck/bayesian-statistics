@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="568604cf-4cee-4369-9848-49373eeb36dd" name="Default Changelist" comment="load data">
-      <change afterPath="$PROJECT_DIR$/Python/graphs.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Python/load_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/load_data.py" afterDir="false" />
     </list>
@@ -87,7 +86,7 @@
       <workItem from="1619726068892" duration="389000" />
       <workItem from="1619726463080" duration="2962000" />
       <workItem from="1619797882615" duration="2203000" />
-      <workItem from="1619800440713" duration="4545000" />
+      <workItem from="1619800440713" duration="7410000" />
     </task>
     <task id="LOCAL-00001" summary="database commit">
       <created>1619725065908</created>
@@ -110,7 +109,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619806072320</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="load data">
+      <created>1619807690844</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1619807690844</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
