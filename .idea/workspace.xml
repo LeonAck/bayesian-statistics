@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="568604cf-4cee-4369-9848-49373eeb36dd" name="Default Changelist" comment="load data">
-      <change afterPath="$PROJECT_DIR$/Data/mzelst.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Python/graphs.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Python/load_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/load_data.py" afterDir="false" />
     </list>
@@ -27,7 +27,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Images" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="PyConsoleOptionsProvider">
@@ -87,7 +87,7 @@
       <workItem from="1619726068892" duration="389000" />
       <workItem from="1619726463080" duration="2962000" />
       <workItem from="1619797882615" duration="2203000" />
-      <workItem from="1619800440713" duration="2983000" />
+      <workItem from="1619800440713" duration="4545000" />
     </task>
     <task id="LOCAL-00001" summary="database commit">
       <created>1619725065908</created>
@@ -103,7 +103,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619727161730</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="load data">
+      <created>1619806072320</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1619806072320</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
