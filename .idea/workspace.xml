@@ -2,8 +2,44 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="568604cf-4cee-4369-9848-49373eeb36dd" name="Default Changelist" comment="load data">
+      <change afterPath="$PROJECT_DIR$/Data/Dataset.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/_old/lcps_ic_opnames.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/_old/mzelst.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/_old/nice_age_IC.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/_old/nice_exit_IC.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/_old/nice_ic_intake.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/_old/nice_treatment-time_IC.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_aantallen_gemeente.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_gedrag.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_ic_opnames.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_prevalentie.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_rioolwaterdata.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_uitgevoerde_testen.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_verpleeghuizen.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_ziekenhuis_ic_opnames_per_leeftijdsgroep.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_ziekenhuisopnames.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/ggd_tests_per_agegroup.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/lcps.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/rivm_infectious_people.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/rivm_reproduction_number.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/rivm_tests.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/vaccines.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/load_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/load_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/lcps_ic_opnames.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/mzelst.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Data/mzelst.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/nice_age_IC.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/nice_exit_IC.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/nice_ic_intake.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/nice_treatment-time_IC.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/rivm_aantallen_gemeente.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/rivm_gedrag.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Data/rivm_gedrag.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/rivm_ic_opnames.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/rivm_prevalentie.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/rivm_rioolwaterdata.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Data/rivm_rioolwaterdata.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/rivm_uitgevoerde_testen.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/rivm_verpleeghuizen.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/rivm_ziekenhuis_ic_opnames_per_leeftijdsgroep.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/rivm_ziekenhuisopnames.csv" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +62,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Images" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="PyConsoleOptionsProvider">
@@ -86,7 +122,9 @@
       <workItem from="1619726068892" duration="389000" />
       <workItem from="1619726463080" duration="2962000" />
       <workItem from="1619797882615" duration="2203000" />
-      <workItem from="1619800440713" duration="7410000" />
+      <workItem from="1619800440713" duration="7448000" />
+      <workItem from="1620215935118" duration="28000" />
+      <workItem from="1620215966792" duration="2781000" />
     </task>
     <task id="LOCAL-00001" summary="database commit">
       <created>1619725065908</created>
@@ -116,7 +154,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619807690844</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="load data">
+      <created>1619815347249</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1619815347250</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
