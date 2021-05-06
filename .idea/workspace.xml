@@ -1,45 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="568604cf-4cee-4369-9848-49373eeb36dd" name="Default Changelist" comment="load data">
-      <change afterPath="$PROJECT_DIR$/Data/Dataset.docx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/_old/lcps_ic_opnames.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/_old/mzelst.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/_old/nice_age_IC.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/_old/nice_exit_IC.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/_old/nice_ic_intake.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/_old/nice_treatment-time_IC.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_aantallen_gemeente.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_gedrag.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_ic_opnames.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_prevalentie.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_rioolwaterdata.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_uitgevoerde_testen.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_verpleeghuizen.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_ziekenhuis_ic_opnames_per_leeftijdsgroep.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/_old/rivm_ziekenhuisopnames.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/ggd_tests_per_agegroup.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/lcps.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/rivm_infectious_people.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/rivm_reproduction_number.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/rivm_tests.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/vaccines.csv" afterDir="false" />
+    <list default="true" id="568604cf-4cee-4369-9848-49373eeb36dd" name="Default Changelist" comment="combining sources for final dataset">
+      <change afterPath="$PROJECT_DIR$/Data/lcps_admissions.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/rivm_prevalence.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/lcps_ic_opnames.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/mzelst.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Data/mzelst.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/nice_age_IC.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/nice_exit_IC.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/nice_ic_intake.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/nice_treatment-time_IC.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/rivm_aantallen_gemeente.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/rivm_gedrag.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Data/rivm_gedrag.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/rivm_ic_opnames.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/rivm_prevalentie.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/rivm_rioolwaterdata.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Data/rivm_rioolwaterdata.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/rivm_uitgevoerde_testen.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/rivm_verpleeghuizen.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/rivm_ziekenhuis_ic_opnames_per_leeftijdsgroep.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/rivm_ziekenhuisopnames.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Dataset.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Dataset.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/lcps.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/rivm_infectious_people.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/TV16.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/load_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/load_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,6 +50,28 @@
     </key>
   </component>
   <component name="RunManager">
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="load_data" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -124,7 +117,9 @@
       <workItem from="1619797882615" duration="2203000" />
       <workItem from="1619800440713" duration="7448000" />
       <workItem from="1620215935118" duration="28000" />
-      <workItem from="1620215966792" duration="2781000" />
+      <workItem from="1620215966792" duration="3580000" />
+      <workItem from="1620303001040" duration="15000" />
+      <workItem from="1620303019392" duration="2421000" />
     </task>
     <task id="LOCAL-00001" summary="database commit">
       <created>1619725065908</created>
@@ -161,7 +156,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619815347250</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="combining sources for final dataset">
+      <created>1620231927936</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1620231927937</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -183,7 +185,8 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="database commit" />
     <MESSAGE value="load data" />
-    <option name="LAST_COMMIT_MESSAGE" value="load data" />
+    <MESSAGE value="combining sources for final dataset" />
+    <option name="LAST_COMMIT_MESSAGE" value="combining sources for final dataset" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/bayesian_statistics$load_data.coverage" NAME="load_data Coverage Results" MODIFIED="1619800443814" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
