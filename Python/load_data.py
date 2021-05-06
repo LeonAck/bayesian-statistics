@@ -50,7 +50,7 @@ data_rivm_tests.date = pd.to_datetime(data_rivm_tests.date, format='%Y-%m-%d')
 
 
 # Load aggregated RNA data created in rna_data.py
-# Note that this python file uses mzelst.csv as a data source. This needs to be changed to data_rivm_rioolwaterdata.csv
+# Note that the file RNA_graphs.py uses mzelst.csv as a data source. This needs to be changed since mzelst.csv is no longer used
 # Put code here
 
 
