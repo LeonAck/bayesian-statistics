@@ -18,13 +18,14 @@ data_mzelst.date = pd.to_datetime(data_mzelst.date, format='%Y-%m-%d')
 data_lcps_ic.Datum = pd.to_datetime(data_lcps_ic.Datum, format='%d-%m-%Y')
 data_nice_ic.date = pd.to_datetime(data_nice_ic.date, format='%Y-%m-%d')
 data_rivm_ic.Date_of_statistics = pd.to_datetime(data_rivm_ic.Date_of_statistics, format='%Y-%m-%d')
-data_rivm_riool.Date_measurement =
+data_rivm_riool.Date_measurement = pd.to_datetime(data_rivm_riool.Date_measurement, format='%Y-%m-%d')
 
 # Sort dataframes to get newest date first
 data_mzelst = data_mzelst.sort_values(by='date', ascending=False)
 data_lcps_ic = data_lcps_ic.sort_values(by='Datum', ascending=False)
 data_nice_ic = data_nice_ic.sort_values(by='date', ascending=False)
 data_rivm_ic = data_rivm_ic.sort_values(by='Date_of_statistics', ascending=False)
+data_rivm_riool = data_rivm_riool.sort_values(by='Date_measurement', ascending=False)
 
 # Delete the newest day since it is not complete
 data_mzelst = data_mzelst.drop(427, axis=0)
@@ -37,9 +38,3 @@ data_nice_ic.IC_Intake.head(10) #Aantal nieuwe patiënten met verdachte of bewez
 data_rivm_ic.IC_admission.head(10) #RIVM haalt z'n data van het NICE, waarom het (lichtelijk) afwijkt is mij onbekend
 #De IC admission data van het LCPS lijkt een dag achter te lopen op die van het RIVM/NICE, waarom is mij onbekend
 #De IC admission data van het LCPS is consistent lager dan die van het RIVM/NICE, waarom is mij onbekend
-
-
-
-
-
-
