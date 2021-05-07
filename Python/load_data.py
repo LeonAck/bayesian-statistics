@@ -1,40 +1,68 @@
 import pandas as pd
 
-# Load data
-data_mzelst = pd.read_csv("Data/mzelst.csv")
-data_lcps_ic = pd.read_csv("Data/lcps_ic_opnames.csv")
-data_nice_ic = pd.read_csv("Data/nice_ic_intake.csv")
-data_rivm_ic = pd.read_csv("Data/rivm_ic_opnames.csv", sep=';')
-data_rivm_riool = pd.read_csv("Data/rivm_rioolwaterdata.csv", sep=';')
+################ LOAD DATA AND COMBINE DATA INTO MASTER DATAFRAME #######################3
+"""In this section, we load all data sources and create a master dataframe 
+containing all variables, saving it in the dataframe 
+'master_data'
+"""
 
-# Inspect variable types
-data_mzelst.info()
-data_lcps_ic.info()
-data_nice_ic.info()
-data_rivm_ic.info()
+
+# Load data
+data_ggd_tests = pd.read_csv("Data/ggd_tests_per_agegroup.csv")
+data_lcps_admissions = pd.read_csv("Data/lcps_admissions.csv")
+data_rivm_prevalence = pd.read_csv("Data/rivm_prevalence.csv")
+data_rivm_reproduction = pd.read_csv("Data/rivm_reproduction_number.csv")
+data_rivm_tests = pd.read_csv("Data/rivm_tests.csv")
+#data_vaccines = pd.read_csv("Data/vaccines.csv")
+#   The vaccine dataset does not seem to load properly, I do not know why
+#data_rivm_gedrag = pd.read_csv("Data/rivm_gedrag.csv", sep=';')
+#   Preparing the gedrag dataset is on hold due to time efficiency
+#   There is only data every 3 weeks until april 20th available, so not the best source of data
+
 
 # Transform date column from string to datetime
-data_mzelst.date = pd.to_datetime(data_mzelst.date, format='%Y-%m-%d')
-data_lcps_ic.Datum = pd.to_datetime(data_lcps_ic.Datum, format='%d-%m-%Y')
-data_nice_ic.date = pd.to_datetime(data_nice_ic.date, format='%Y-%m-%d')
-data_rivm_ic.Date_of_statistics = pd.to_datetime(data_rivm_ic.Date_of_statistics, format='%Y-%m-%d')
-data_rivm_riool.Date_measurement = pd.to_datetime(data_rivm_riool.Date_measurement, format='%Y-%m-%d')
+data_ggd_tests.date = pd.to_datetime(data_ggd_tests.date, format='%Y-%m-%d')
+data_lcps_admissions.date = pd.to_datetime(data_lcps_admissions.date, format='%Y-%m-%d')
+data_rivm_prevalence.Date = pd.to_datetime(data_rivm_prevalence.Date, format='%Y-%m-%d')
+data_rivm_reproduction.Date = pd.to_datetime(data_rivm_reproduction.Date, format='%Y-%m-%d')
+data_rivm_tests.date = pd.to_datetime(data_rivm_tests.date, format='%Y-%m-%d')
+
 
 # Sort dataframes to get newest date first
-data_mzelst = data_mzelst.sort_values(by='date', ascending=False)
-data_lcps_ic = data_lcps_ic.sort_values(by='Datum', ascending=False)
-data_nice_ic = data_nice_ic.sort_values(by='date', ascending=False)
-data_rivm_ic = data_rivm_ic.sort_values(by='Date_of_statistics', ascending=False)
-data_rivm_riool = data_rivm_riool.sort_values(by='Date_measurement', ascending=False)
+# Put code here
 
-# Delete the newest day since it is not complete
-data_mzelst = data_mzelst.drop(427, axis=0)
-data_lcps_ic = data_lcps_ic.drop(0, axis=0)
-data_nice_ic = data_nice_ic.drop(427, axis=0)
 
-# Inspect differences in IC admission data among data sources
-data_lcps_ic.IC_Nieuwe_Opnames_COVID.head(10) #Het aantal patiënten met COVID-19 dat in 24 uur nieuw is opgenomen op de IC
-data_nice_ic.IC_Intake.head(10) #Aantal nieuwe patiënten met verdachte of bewezen COVID-19 status die per dag op de IC’s worden opgenomen
-data_rivm_ic.IC_admission.head(10) #RIVM haalt z'n data van het NICE, waarom het (lichtelijk) afwijkt is mij onbekend
-#De IC admission data van het LCPS lijkt een dag achter te lopen op die van het RIVM/NICE, waarom is mij onbekend
-#De IC admission data van het LCPS is consistent lager dan die van het RIVM/NICE, waarom is mij onbekend
+# Rename variables in all datasets to make code foolproof and consistent
+# Put code here (note this can also be done before transforming date column, but then that code needs to be adjusted)
+
+
+# Delete superfluous variables, such as data_rivm_reproduction.population and data_rivm_prevalence.version
+# Put code here
+
+
+# Only keep data from 2020-10-17 (start LCPS IC admission dataset) until 2021-05-02 (end RIVM prevalence dataset)
+# Put code here
+
+
+# GGD dataset: aggregate data per GGD on a national level per age group
+# Also transform from long into wide format (i.e. with only date as a row index, and cases_0-9 cases_10-19 etc as column variables)
+# Put code here
+
+
+# Load aggregated RNA data created in rna_data.py
+# Note that the file RNA_graphs.py uses mzelst.csv as a data source. This needs to be changed since mzelst.csv is no longer used
+# Put code here
+
+
+# Create master dataframe containing all datasets
+# Put code here
+
+
+# Save master dataframe to file 'master_data'
+# Put code here
+
+
+
+
+
+
