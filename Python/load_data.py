@@ -1,6 +1,6 @@
 import pandas as pd
 
-################ LOAD DATA AND COMBINE DATA INTO MASTER DATAFRAME #######################3
+################ LOAD DATA AND COMBINE DATA INTO MASTER DATAFRAME #######################
 """In this section, we load all data sources and create a master dataframe 
 containing all variables, saving it in the dataframe 
 'master_data'
@@ -13,19 +13,21 @@ data_rivm_prevalence = pd.read_csv("Data/rivm_prevalence.csv")
 data_rivm_reproduction = pd.read_csv("Data/rivm_reproduction_number.csv")
 data_rivm_tests = pd.read_csv("Data/rivm_tests.csv")
 # pass own column names to loading vaccine data to force column names
-data_vaccines = pd.read_csv("Data/vaccines.csv",
-                            header=0, names=["date",
-                                             "vaccines_administered_estimated_carehomes",
-                                             "vaccines_administered_ggd",
-                                             "vaccines_administered_hospital",
-                                             "vaccines_administered_estimated",
-                                             "vaccines_administered",
-                                             "vaccines_administered_doctors"])
+data_vaccines = pd.read_csv(
+    "Data/vaccines.csv",
+    header=0, names=["date",
+                     "vaccines_administered_estimated_carehomes",
+                     "vaccines_administered_ggd",
+                     "vaccines_administered_hospital",
+                     "vaccines_administered_estimated",
+                     "vaccines_administered",
+                     "vaccines_administered_doctors"])
 data_rna = pd.read_csv("Data/grouped_rna.csv", index_col=0)
 
 # data_rivm_gedrag = pd.read_csv("Data/rivm_gedrag.csv", sep=';')
 #   Preparing the gedrag dataset is on hold due to time efficiency
-#   There is only data every 3 weeks until april 20th available, so not the best source of data
+#   There is only data every 3 weeks until april 20th available,
+#   so not the best source of data
 
 
 # change conflicting date variables to "date"
@@ -65,16 +67,17 @@ data_rna = data_rna.sort_values(by='date', ascending=False)
 data_vaccines = data_vaccines.drop_duplicates(subset='date')
 
 # Rename variables in all datasets to make code foolproof and consistent
-# Put code here (note this can also be done before transforming date column, but then that code needs to be adjusted)
+# Put code here (note this can also be done before transforming date column,
+# but then that code needs to be adjusted)
 
-
-# Delete superfluous variables, such as data_rivm_reproduction.population and data_rivm_prevalence.version
+# Delete superfluous variables, such as data_rivm_reproduction.population
+# and data_rivm_prevalence.version
 # 1. Variables below have the same value over all observations
 data_rivm_prevalence = data_rivm_prevalence.drop(labels=["population", "version"], axis=1)
 data_rivm_reproduction = data_rivm_reproduction.drop(labels="version", axis=1)
 
-
-# Only keep data from 2020-10-17 (start LCPS IC admission dataset) until 2021-05-02 (end RIVM prevalence dataset)
+# Only keep data from 2020-10-17 (start LCPS IC admission dataset) until 2021-05-02
+# (end RIVM prevalence dataset)
 # 1. Make the date column the index of the dataset.
 # This has already been done for agg_ggd_tests_wide
 data_lcps_admissions = data_lcps_admissions.set_index("date")
@@ -109,4 +112,3 @@ master = pd.concat([agg_ggd_tests_wide, data_lcps_admissions,
 
 # Save master dataframe to file 'master_data'
 master.to_csv(r'Data\master.csv')
-
