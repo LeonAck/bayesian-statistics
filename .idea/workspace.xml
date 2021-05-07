@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="568604cf-4cee-4369-9848-49373eeb36dd" name="Default Changelist" comment="file om rna_Data voor te bereiden. file om grafieken van RNA data te maken. nieuwe csv-file met gesommeerde RNA data">
+    <list default="true" id="568604cf-4cee-4369-9848-49373eeb36dd" name="Default Changelist" comment="Commit om daarna te overschrijven">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/TV16.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Python/graphs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/graphs.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Python/load_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/load_data.py" afterDir="false" />
     </list>
@@ -164,6 +165,7 @@
     <MESSAGE value="database commit" />
     <MESSAGE value="load data" />
     <MESSAGE value="file om rna_Data voor te bereiden. file om grafieken van RNA data te maken. nieuwe csv-file met gesommeerde RNA data" />
-    <option name="LAST_COMMIT_MESSAGE" value="file om rna_Data voor te bereiden. file om grafieken van RNA data te maken. nieuwe csv-file met gesommeerde RNA data" />
+    <MESSAGE value="Commit om daarna te overschrijven" />
+    <option name="LAST_COMMIT_MESSAGE" value="Commit om daarna te overschrijven" />
   </component>
 </project>
