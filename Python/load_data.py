@@ -21,6 +21,7 @@ data_vaccines = pd.read_csv("Data/vaccines.csv",
                                              "vaccines_administered_estimated",
                                              "vaccines_administered",
                                              "vaccines_administered_doctors"])
+data_rna = pd.read_csv("Data/grouped_rna.csv", index_col=0)
 
 # data_rivm_gedrag = pd.read_csv("Data/rivm_gedrag.csv", sep=';')
 #   Preparing the gedrag dataset is on hold due to time efficiency
@@ -30,6 +31,7 @@ data_vaccines = pd.read_csv("Data/vaccines.csv",
 # change conflicting date variables to "date"
 data_rivm_prevalence = data_rivm_prevalence.rename(columns={"Date": "date"})
 data_rivm_reproduction = data_rivm_reproduction.rename(columns={"Date": "date"})
+data_rna = data_rna.rename(columns={"Date_measurement": "date"})
 
 # Transform date column from string to datetime
 data_ggd_tests.date = pd.to_datetime(data_ggd_tests.date, format='%Y-%m-%d')
@@ -38,6 +40,7 @@ data_rivm_prevalence.date = pd.to_datetime(data_rivm_prevalence.date, format='%Y
 data_rivm_reproduction.date = pd.to_datetime(data_rivm_reproduction.date, format='%Y-%m-%d')
 data_rivm_tests.date = pd.to_datetime(data_rivm_tests.date, format='%Y-%m-%d')
 data_vaccines.date = pd.to_datetime(data_vaccines.date, format='%Y-%m-%d')
+data_rna.date = pd.to_datetime(data_rna.date, format='%Y-%m-%d')
 
 # GGD dataset: aggregate data per GGD on a national level per age group
 # Also transform from long into wide format (i.e. with only date as a row index,
@@ -56,8 +59,9 @@ data_rivm_prevalence = data_rivm_prevalence.sort_values(by='date', ascending=Fal
 data_rivm_reproduction = data_rivm_reproduction.sort_values(by='date', ascending=False)
 data_rivm_tests = data_rivm_tests.sort_values(by='date', ascending=False)
 data_vaccines = data_vaccines.sort_values(by='date', ascending=False)
+data_rna = data_rna.sort_values(by='date', ascending=False)
 
-# Drop duplicates vaccine data
+# Drop duplicates vaccine data. For some reason duplicates are created when sorting
 data_vaccines = data_vaccines.drop_duplicates(subset='date')
 
 # Rename variables in all datasets to make code foolproof and consistent
@@ -78,6 +82,7 @@ data_rivm_prevalence = data_rivm_prevalence.set_index("date")
 data_rivm_reproduction = data_rivm_reproduction.set_index("date")
 data_rivm_tests = data_rivm_tests.set_index("date")
 data_vaccines = data_vaccines.set_index("date")
+data_rna = data_rna.set_index("date")
 
 # 2. Slice all dates from now to 2020-10-17
 data_lcps_admissions = data_lcps_admissions.loc[:'2020-10-17']
@@ -86,6 +91,7 @@ data_rivm_reproduction = data_rivm_reproduction.loc[:'2020-10-17']
 data_rivm_tests = data_rivm_tests.loc[:'2020-10-17']
 data_vaccines = data_vaccines.loc[:'2020-10-17']
 agg_ggd_tests_wide = agg_ggd_tests_wide.loc[:'2020-10-17']
+data_rna = data_rna.loc[:'2020-10-17']
 
 # Load aggregated RNA data created in rna_data.py
 # Note that the file RNA_graphs.py uses mzelst.csv as a data source.
@@ -96,8 +102,11 @@ agg_ggd_tests_wide = agg_ggd_tests_wide.loc[:'2020-10-17']
 # Create master dataframe containing all datasets
 master = pd.concat([agg_ggd_tests_wide, data_lcps_admissions,
                     data_rivm_prevalence, data_rivm_reproduction,
-                    data_rivm_tests, data_vaccines], axis=1)
+                    data_rivm_tests, data_vaccines, data_rna], axis=1)
 
+# dataset is niet gesort.
+# vaccines beginnen pas vanaf 2021-01-06
 
 # Save master dataframe to file 'master_data'
-# Put code here
+master.to_csv(r'Data\master.csv')
+
