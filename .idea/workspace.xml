@@ -2,7 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="568604cf-4cee-4369-9848-49373eeb36dd" name="Default Changelist" comment="load data and create master dataframe">
+      <change afterPath="$PROJECT_DIR$/Data/Master Data Description.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/Raw Data Description.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Dataset.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/grouped_rna.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Data/grouped_rna.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/master.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Data/master.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Python/load_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/load_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/rna_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/rna_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,7 +118,9 @@
       <workItem from="1620215935118" duration="28000" />
       <workItem from="1620215966792" duration="3580000" />
       <workItem from="1620303001040" duration="15000" />
-      <workItem from="1620303019392" duration="2753000" />
+      <workItem from="1620303019392" duration="3361000" />
+      <workItem from="1620585639255" duration="152000" />
+      <workItem from="1620585795941" duration="10753000" />
     </task>
     <task id="LOCAL-00001" summary="database commit">
       <created>1619725065908</created>
@@ -169,7 +178,14 @@
       <option name="project" value="LOCAL" />
       <updated>1620305553477</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="load data and create master dataframe">
+      <created>1620305801043</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1620305801043</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -197,5 +213,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/bayesian_statistics$load_data.coverage" NAME="load_data Coverage Results" MODIFIED="1619800443814" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/load_data_py$load_data.coverage" NAME="load_data Coverage Results" MODIFIED="1620591065138" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

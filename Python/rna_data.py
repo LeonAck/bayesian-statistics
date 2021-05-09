@@ -51,17 +51,19 @@ grouped_rna_df = pd.concat([
 # make dates a column
 grouped_rna_df.reset_index(level=0, inplace=True)
 
-# get SMA for three days
-grouped_rna_df['pandas_SMA_3'] = grouped_rna_df.iloc[
-                                 :, 1].rolling(window=3).mean()
-
-# get SMA for seven days
-grouped_rna_df['pandas_SMA_7'] = grouped_rna_df.iloc[
-                                 :, 1].rolling(window=7).mean()
-
 # create new column with rna_per_100000 divided by number of measurements on that day
 grouped_rna_df['RNA_per_100000_per_measurement'] = grouped_rna_df[
     'RNA_flow_per_100000'] / grouped_rna_df['Measurement_count']
+
+# get SMA for three days
+grouped_rna_df['pandas_SMA_3'] = grouped_rna_df.iloc[
+                                 :, 4].rolling(window=3).mean()
+
+# get SMA for seven days
+grouped_rna_df['pandas_SMA_7'] = grouped_rna_df.iloc[
+                                 :, 4].rolling(window=7).mean()
+
+
 
 # save grouped_rna_df to disc
 grouped_rna_df.to_csv(r'Data\grouped_rna.csv')
