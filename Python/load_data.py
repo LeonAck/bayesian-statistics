@@ -102,7 +102,8 @@ master = master.sort_values(by='date', ascending=False)
 
 # Delete superfluous variables
 master = master.drop(labels=[('cases', '<50'), ('cases', 'Unknown'),
-                             'population', 'RNA_per_ml', 'RNA_flow_per_100000',
+                             'population', 'IC_Bedden_Non_COVID',
+                             'RNA_per_ml', 'RNA_flow_per_100000',
                              'Measurement_count'], axis=1)
 
 # Rename variables for clarity and consistency
@@ -116,19 +117,18 @@ master = master.rename(columns={('cases', '0-9'): 'Cases_0_9',
                                 ('cases', '70-79'): 'Cases_70_79',
                                 ('cases', '80-89'): 'Cases_80_89',
                                 ('cases', '90+'): 'Cases_90_Plus',
-                                'IC_Bedden_COVID': 'ICU_Beds_COVID',
-                                'IC_Bedden_Non_COVID': 'ICU_Beds_Non_COVID',
-                                'Kliniek_Bedden': 'Hosp_Beds_COVID',
-                                'IC_Nieuwe_Opnames_COVID': 'ICU_Inflow_COVID',
-                                'Kliniek_Nieuwe_Opnames_COVID': 'Hosp_Inflow_COVID',
-                                'Totaal_bezetting': 'Total_Beds_COVID',
-                                'IC_Opnames_7d': 'ICU_Inflow_COVID_SMA7d',
-                                'Kliniek_Opnames_7d': 'Hosp_Inflow_COVID_SMA7d',
-                                'Totaal_opnames': 'Total_Inflow_COVID',
-                                'Totaal_opnames_7d': 'Total_Inflow_COVID_SMA7d',
+                                'IC_Bedden_COVID': 'ICU_Beds',
+                                'Kliniek_Bedden': 'Hosp_Beds',
+                                'IC_Nieuwe_Opnames_COVID': 'ICU_Inflow',
+                                'Kliniek_Nieuwe_Opnames_COVID': 'Hosp_Inflow',
+                                'Totaal_bezetting': 'Total_Beds',
+                                'IC_Opnames_7d': 'ICU_Inflow_SMA7d',
+                                'Kliniek_Opnames_7d': 'Hosp_Inflow_SMA7d',
+                                'Totaal_opnames': 'Total_Inflow',
+                                'Totaal_opnames_7d': 'Total_Inflow_SMA7d',
                                 'Totaal_IC': 'Total_ICU_Beds',
-                                'IC_opnames_14d': 'ICU_Inflow_COVID_SMA14d',
-                                'Kliniek_opnames_14d': 'Hosp_Inflow_COVID_SMA14d',
+                                'IC_opnames_14d': 'ICU_Inflow_SMA14d',
+                                'Kliniek_opnames_14d': 'Hosp_Inflow_SMA14d',
                                 'OMT_Check_IC': 'OMT_Check_ICU',
                                 'OMT_Check_Kliniek': 'OMT_Check_Hosp',
                                 'prev_low': 'Prev_LB',
@@ -167,6 +167,32 @@ master[['Vacc_Est_Carehomes', 'Vacc_Adm_GGD', 'Vacc_Adm_Hosp', 'Vacc_Est',
                                                   'Vacc_Adm',
                                                   'Vacc_Adm_Doctors']].fillna(0)
 
+# Copy master dataframe to other dataframe for saving
+all_data = master.copy()
 
-# Save master dataframe to file 'master_data'
+# Create subset of all data with relevant variables.
+rel_vars = ['ICU_Inflow', 'ICU_Inflow_SMA7d',
+            'ICU_Inflow_SMA14d', 'Hosp_Inflow',
+            'Hosp_Inflow_SMA7d', 'Hosp_Inflow_SMA14d',
+            'Total_Inflow', 'Total_Inflow_SMA7d',
+            'Tested', 'Tested_SMA7d', 'Cases', 'Cases_Pct',
+            'Cases_Pct_SMA3d', 'Cases_Pct_SMA7d',
+            'Cases_0_9', 'Cases_10_19', 'Cases_20_29', 'Cases_30_39',
+            'Cases_40_49', 'Cases_50_59', 'Cases_60_69', 'Cases_70_79',
+            'Cases_80_89', 'Cases_90_Plus', 'Prev_LB', 'Prev', 'Prev_UB',
+            'Prev_Growth', 'Prev_SMA7d', 'R_LB', 'R', 'R_UB',
+            'RNA', 'RNA_SMA3d', 'RNA_SMA7d',
+            'Vacc_Est', 'Vacc_Est_Carehomes', 'Vacc_Adm_GGD',
+            'Vacc_Adm_Hosp', 'Vacc_Adm_Doctors']
+master = master[rel_vars]
+
+
+# Save dataframe with all data to file 'all_data'
+all_data.to_csv(r'Data\all_data.csv')
+
+# Save dataframe with relevant variables to file 'master
 master.to_csv(r'Data\master.csv')
+
+
+
+
