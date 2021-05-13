@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="568604cf-4cee-4369-9848-49373eeb36dd" name="Default Changelist" comment="load data and create master dataframe">
+    <list default="true" id="568604cf-4cee-4369-9848-49373eeb36dd" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Python/load_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/load_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -26,12 +27,12 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="PyConsoleConfigurable.Python Console" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
-      <console-settings sdk-home="C:\Python\python.exe" working-directory="$PROJECT_DIR$">
-        <option name="mySdkHome" value="C:\Python\python.exe" />
+      <console-settings sdk-home="C:\Users\lback\AppData\Local\Programs\Python\Python39\python.exe" working-directory="$PROJECT_DIR$">
+        <option name="mySdkHome" value="C:\Users\lback\AppData\Local\Programs\Python\Python39\python.exe" />
         <option name="myWorkingDirectory" value="$PROJECT_DIR$" />
       </console-settings>
     </option>
@@ -70,7 +71,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Python\python.exe" />
+      <option name="SDK_HOME" value="C:\Users\lback\AppData\Local\Programs\Python\Python39\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -169,7 +170,28 @@
       <option name="project" value="LOCAL" />
       <updated>1620305553477</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="load_data tussendoor opslaan">
+      <created>1620396234442</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1620396234442</updated>
+    </task>
+    <task id="LOCAL-00010" summary="load_data.py structuur af. Hierbinnen kunnen nog observaties/ variabelen worden verwijderd en namen van variabelen af. Master.csv is opgeslagen in de Data map">
+      <created>1620398610848</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1620398610848</updated>
+    </task>
+    <task id="LOCAL-00011" summary="schoonheidsdingetjes">
+      <created>1620398768573</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1620398768573</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -193,9 +215,9 @@
     <MESSAGE value="load data" />
     <MESSAGE value="combining sources for final dataset" />
     <MESSAGE value="load data and create master dataframe" />
-    <option name="LAST_COMMIT_MESSAGE" value="load data and create master dataframe" />
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/bayesian_statistics$load_data.coverage" NAME="load_data Coverage Results" MODIFIED="1619800443814" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <MESSAGE value="load_data tussendoor opslaan" />
+    <MESSAGE value="load_data.py structuur af. Hierbinnen kunnen nog observaties/ variabelen worden verwijderd en namen van variabelen af. Master.csv is opgeslagen in de Data map" />
+    <MESSAGE value="schoonheidsdingetjes" />
+    <option name="LAST_COMMIT_MESSAGE" value="schoonheidsdingetjes" />
   </component>
 </project>

@@ -99,7 +99,7 @@ data_rna = data_rna.loc[:'2020-10-17']
 # Load aggregated RNA data created in rna_data.py
 # Note that the file RNA_graphs.py uses mzelst.csv as a data source.
 # This needs to be changed since mzelst.csv is no longer used
-# Put code here
+# RNA is loaded above
 
 
 # Create master dataframe containing all datasets
