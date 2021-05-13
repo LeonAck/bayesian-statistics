@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="568604cf-4cee-4369-9848-49373eeb36dd" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/load_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/load_data.py" afterDir="false" />
+    <list default="true" id="568604cf-4cee-4369-9848-49373eeb36dd" name="Default Changelist" comment="minor errors">
+      <change afterPath="$PROJECT_DIR$/Data/Master Data Description.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/~$l Data Description.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/~$ster Data Description.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Raw Data Description.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Raw Data Description.docx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,12 +29,12 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="PyConsoleConfigurable.Python Console" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
-      <console-settings sdk-home="C:\Users\lback\AppData\Local\Programs\Python\Python39\python.exe" working-directory="$PROJECT_DIR$">
-        <option name="mySdkHome" value="C:\Users\lback\AppData\Local\Programs\Python\Python39\python.exe" />
+      <console-settings sdk-home="C:\Python\python.exe" working-directory="$PROJECT_DIR$">
+        <option name="mySdkHome" value="C:\Python\python.exe" />
         <option name="myWorkingDirectory" value="$PROJECT_DIR$" />
       </console-settings>
     </option>
@@ -71,7 +73,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\lback\AppData\Local\Programs\Python\Python39\python.exe" />
+      <option name="SDK_HOME" value="C:\Python\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -112,7 +114,11 @@
       <workItem from="1620215935118" duration="28000" />
       <workItem from="1620215966792" duration="3580000" />
       <workItem from="1620303001040" duration="15000" />
-      <workItem from="1620303019392" duration="2753000" />
+      <workItem from="1620303019392" duration="3361000" />
+      <workItem from="1620585639255" duration="152000" />
+      <workItem from="1620585795941" duration="11020000" />
+      <workItem from="1620903858952" duration="479000" />
+      <workItem from="1620904344075" duration="9590000" />
     </task>
     <task id="LOCAL-00001" summary="database commit">
       <created>1619725065908</created>
@@ -170,28 +176,42 @@
       <option name="project" value="LOCAL" />
       <updated>1620305553477</updated>
     </task>
-    <task id="LOCAL-00009" summary="load_data tussendoor opslaan">
-      <created>1620396234442</created>
+    <task id="LOCAL-00009" summary="load data and create master dataframe">
+      <created>1620305801043</created>
       <option name="number" value="00009" />
       <option name="presentableId" value="LOCAL-00009" />
       <option name="project" value="LOCAL" />
-      <updated>1620396234442</updated>
+      <updated>1620305801043</updated>
     </task>
-    <task id="LOCAL-00010" summary="load_data.py structuur af. Hierbinnen kunnen nog observaties/ variabelen worden verwijderd en namen van variabelen af. Master.csv is opgeslagen in de Data map">
-      <created>1620398610848</created>
+    <task id="LOCAL-00010" summary="finalise master dataframe">
+      <created>1620598199124</created>
       <option name="number" value="00010" />
       <option name="presentableId" value="LOCAL-00010" />
       <option name="project" value="LOCAL" />
-      <updated>1620398610848</updated>
+      <updated>1620598199124</updated>
     </task>
-    <task id="LOCAL-00011" summary="schoonheidsdingetjes">
-      <created>1620398768573</created>
+    <task id="LOCAL-00011" summary="graphs and adjustment in variable names">
+      <created>1620912768551</created>
       <option name="number" value="00011" />
       <option name="presentableId" value="LOCAL-00011" />
       <option name="project" value="LOCAL" />
-      <updated>1620398768573</updated>
+      <updated>1620912768552</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="subsetting master dataframe">
+      <created>1620922433384</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1620922433384</updated>
+    </task>
+    <task id="LOCAL-00013" summary="minor errors">
+      <created>1620922622615</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1620922622615</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -215,9 +235,14 @@
     <MESSAGE value="load data" />
     <MESSAGE value="combining sources for final dataset" />
     <MESSAGE value="load data and create master dataframe" />
-    <MESSAGE value="load_data tussendoor opslaan" />
-    <MESSAGE value="load_data.py structuur af. Hierbinnen kunnen nog observaties/ variabelen worden verwijderd en namen van variabelen af. Master.csv is opgeslagen in de Data map" />
-    <MESSAGE value="schoonheidsdingetjes" />
-    <option name="LAST_COMMIT_MESSAGE" value="schoonheidsdingetjes" />
+    <MESSAGE value="finalise master dataframe" />
+    <MESSAGE value="graphs and adjustment in variable names" />
+    <MESSAGE value="subsetting master dataframe" />
+    <MESSAGE value="minor errors" />
+    <option name="LAST_COMMIT_MESSAGE" value="minor errors" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/bayesian_statistics$load_data.coverage" NAME="load_data Coverage Results" MODIFIED="1619800443814" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/load_data_py$load_data.coverage" NAME="load_data Coverage Results" MODIFIED="1620922301333" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
