@@ -2,6 +2,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+"""
+I believe this file is no longer up to date
+    - Roel
+"""
+
 # Load data
 grouped_rna_df = pd.read_csv("Data/grouped_rna.csv", index_col=0)
 data_mzelst = pd.read_csv("Data/mzelst.csv")

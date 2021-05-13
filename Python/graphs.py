@@ -12,10 +12,10 @@ master.date = pd.to_datetime(master.date, format='%Y-%m-%d')
 
 
 # Graph of ICU Intake
-plt.scatter(master.date, master.ICU_Inflow_COVID, s=4)
-plt.plot(master.date, master.ICU_Inflow_COVID, label='ICU Admissions')
-plt.plot(master.date, master.ICU_Inflow_COVID_SMA7d, 'r--', label='Moving Average 7 Days')
-plt.plot(master.date, master.ICU_Inflow_COVID_SMA14d, 'k-.', label='Moving Average 14 Days')
+plt.scatter(master.date, master.ICU_Inflow, s=4)
+plt.plot(master.date, master.ICU_Inflow, label='ICU Admissions')
+plt.plot(master.date, master.ICU_Inflow_SMA7d, 'r--', label='Moving Average 7 Days')
+plt.plot(master.date, master.ICU_Inflow_SMA14d, 'k-.', label='Moving Average 14 Days')
 plt.xlabel('Date')
 plt.ylabel('Admissions')
 plt.legend()
@@ -23,9 +23,9 @@ plt.show()
 
 
 # Graph of Hospital Intake
-plt.plot(master.date, master.Hosp_Inflow_COVID, label='Hospital Admissions')
-plt.plot(master.date, master.Hosp_Inflow_COVID_SMA7d, 'r--', label='Moving Average 7 Days')
-plt.plot(master.date, master.Hosp_Inflow_COVID_SMA14d, 'k-.', label='Moving Average 14 Days')
+plt.plot(master.date, master.Hosp_Inflow, label='Hospital Admissions')
+plt.plot(master.date, master.Hosp_Inflow_SMA7d, 'r--', label='Moving Average 7 Days')
+plt.plot(master.date, master.Hosp_Inflow_SMA14d, 'k-.', label='Moving Average 14 Days')
 plt.xlabel('Date')
 plt.ylabel('Admissions')
 plt.legend()
@@ -103,7 +103,7 @@ plt.show()
 # Test to obtain smoothing spline of ICU inflow
 # Not sure if I am doing this right
 x = np.linspace(0, 197, 198)
-y = master.ICU_Inflow_COVID
+y = master.ICU_Inflow
 ss = UnivariateSpline(x, y, k=3) #k=3 means cubic spline
 xs = np.linspace(0, 197, 198)
 plt.plot(master.date, y, 'ro', ms=5)
