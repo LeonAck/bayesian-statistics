@@ -122,6 +122,6 @@ print('Best score for this model: {}'.format(np.absolute(results.best_score_)))
 # predict values of y based on y_test
 yhat2 = search.predict(X_test)
 
-print(yhat2)
+print("standardized predictions", yhat2)
 
 
