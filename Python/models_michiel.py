@@ -7,6 +7,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import ElasticNet
 from sklearn.linear_model import Lasso
 from sklearn.linear_model import Ridge
+from sklearn.linear_model import PoissonRegressor
 from cross_validation import BlockingTimeSeriesSplit 
 from cross_validation import GridSearchOwn
 
@@ -53,9 +54,9 @@ grid['alpha'] = np.arange(0.01, 1, 0.01) # we define the grid for hyperparameter
 btscv = BlockingTimeSeriesSplit(n_splits=5) # divide training set in accordance with time series structure (code in cross_validation.py)
 
 # (2) model the elastic net
-own_grid = GridSearchOwn(grid=grid['alpha'], cv=btscv, X=X_train, y=y_train, model=ElasticNet)
-own_grid.perform_search()
-best_lambda1 = own_grid.best_param
+own_grid1 = GridSearchOwn(grid=grid['alpha'], cv=btscv, X=X_train, y=y_train, model=ElasticNet)
+own_grid1.perform_search()
+best_lambda1 = own_grid1.best_param
 print(best_lambda1)
 
 regr1 = ElasticNet(alpha=best_lambda1) # elastic net model
@@ -64,9 +65,9 @@ yhat = regr1.predict(X_test) # compute predictions based on test set
 yhat = yhat * scaler.scale_[0] + scaler.mean_[0] # de-standardize results
 
 # (3) model the lasso
-own_grid = GridSearchOwn(grid=grid['alpha'], cv=btscv, X=X_train, y=y_train, model=Lasso)
-own_grid.perform_search()
-best_lambda2 = own_grid.best_param
+own_grid2 = GridSearchOwn(grid=grid['alpha'], cv=btscv, X=X_train, y=y_train, model=Lasso)
+own_grid2.perform_search()
+best_lambda2 = own_grid2.best_param
 print(best_lambda2)
 
 regr2 = Lasso(alpha=best_lambda2) # lasso model
@@ -75,9 +76,9 @@ y2hat = regr2.predict(X_test) # compute predictions based on test set
 y2hat = y2hat * scaler.scale_[0] + scaler.mean_[0] # de-standardize results
 
 # (4) model the ridge
-own_grid = GridSearchOwn(grid=grid['alpha'], cv=btscv, X=X_train, y=y_train, model=Ridge)
-own_grid.perform_search()
-best_lambda3 = own_grid.best_param
+own_grid3 = GridSearchOwn(grid=grid['alpha'], cv=btscv, X=X_train, y=y_train, model=Ridge)
+own_grid3.perform_search()
+best_lambda3 = own_grid3.best_param
 print(best_lambda3)
 
 regr3 = Ridge(alpha=best_lambda3) # ridge model
@@ -85,4 +86,14 @@ regr3.fit(X_train,y_train) # compute parameters based on test set
 y3hat = regr3.predict(X_test) # compute predictions based on train set
 y3hat = y3hat * scaler.scale_[0] + scaler.mean_[0] # de-standardize results
 
-# (5) compute loss function
+# (5) model the poisson regressor (NB poisson regression depends on assumption mean = variance, so can maybe not be used. in lecture it was stressed however that in prediction those assumptions are less important)
+own_grid4 = GridSearchOwn(grid=grid['alpha'], cv=btscv, X=X_train, y=y_train, model=PoissonRegressor)
+own_grid4.perform_search()
+best_lambda4 = own_grid4.best_param
+print(best_lambda4)
+
+regr4 = PoissonRegressor(alpha=best_lambda4) # ridge model
+regr4.fit(X_train,y_train) # compute parameters based on test set
+y4hat = regr4.predict(X_test) # compute predictions based on train set
+y4hat = y4hat * scaler.scale_[0] + scaler.mean_[0] # de-standardize results
+
