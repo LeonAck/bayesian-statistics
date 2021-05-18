@@ -6,15 +6,22 @@ from scipy.interpolate import UnivariateSpline
 
 # Load master data
 master = pd.read_csv("Data/master.csv")
-
-# Convert date column to datetime
-master.date = pd.to_datetime(master.date, format='%Y-%m-%d')
+data = pd.read_csv("Data/data.csv")
 
 # Graph of ICU Intake
 plt.scatter(master.date, master.ICU_Inflow, s=4)
 plt.plot(master.date, master.ICU_Inflow, label='ICU Admissions')
 plt.plot(master.date, master.ICU_Inflow_SMA7d, 'r--', label='Moving Average 7 Days')
 plt.plot(master.date, master.ICU_Inflow_SMA14d, 'k-.', label='Moving Average 14 Days')
+plt.xlabel('Date')
+plt.ylabel('Admissions')
+plt.legend()
+plt.show()
+
+# Graph of ICU Intake
+plt.scatter(data.date, data.ICU_Inflow, s=4)
+plt.plot(data.date, data.ICU_Inflow, label='ICU Admissions')
+plt.plot(data.date, data.ICU_Inflow_SMA7d, 'r--', label='Moving Average 7 Days')
 plt.xlabel('Date')
 plt.ylabel('Admissions')
 plt.legend()
@@ -63,8 +70,6 @@ plt.show()
 
 # Graph of prevalence
 plt.plot(master.date, master.Prev, label='Number of infectious people')
-plt.plot(master.date, master.Prev_LB, 'k--', label='Lowerbound')
-plt.plot(master.date, master.Prev_UB, 'k--', label='Upperbound')
 plt.xlabel('Date')
 plt.ylabel('Infectious People')
 plt.legend()
@@ -72,8 +77,6 @@ plt.show()
 
 # Graph of R number
 plt.plot(master.date, master.R, label='Reproduction Number')
-plt.plot(master.date, master.R_LB, 'k--', label='Lowerbound')
-plt.plot(master.date, master.R_UB, 'k--', label='Upperbound')
 plt.xlabel('Date')
 plt.ylabel('R')
 plt.legend()
