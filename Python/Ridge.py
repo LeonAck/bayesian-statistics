@@ -6,62 +6,57 @@ Op basis van deze link https://machinelearningmastery.com/ridge-regression-with-
 # Import modules
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import RepeatedKFold
-from sklearn.linear_model import Ridge
+from sklearn.linear_model import Ridge, Lasso, PoissonRegressor, ElasticNet
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
+# (Roel) I don't know why but I need to add the code below
+# to be able to import cross_validation
+import sys
+sys.path.append("Python")
 from cross_validation import BlockingTimeSeriesSplit, GridSearchOwn
 
 # Load data
-master = pd.read_csv("Data/master.csv")
+data = pd.read_csv("Data/data.csv", index_col=0)
 
-################### Data preparation ###########################
-# mogelijk een deel hiervan naar master index
-# set date as index of frame
-master = master.set_index("date")
 
-# Remove all data up to and including 29-10-2020 as variables contain nan
-# This is a temporary solution. We might later decide to exclude these variables
-# to use the observations before 29-10-2020 as well
-master = master.loc['2021-04-19':'2020-10-30']
-
-# replace date where vaccin columns are all zero with nan
-master.loc[['2021-04-11'], ['Vacc_Est', 'Vacc_Est_Carehomes', 'Vacc_Adm_GGD',
-            'Vacc_Adm_Hosp', 'Vacc_Adm_Doctors']] = np.NAN
-
-# interpolate nans in RNA data and in vaccin columns
-master = master.interpolate()
-
-# Create subset of all data with relevant variables.
-rel_vars = ['ICU_Inflow', 'Hosp_Inflow',
-            'Total_Inflow',
-            'Tested', 'Cases', 'Cases_Pct',
-            'Cases_0_9', 'Cases_10_19', 'Cases_20_29', 'Cases_30_39',
-            'Cases_40_49', 'Cases_50_59', 'Cases_60_69', 'Cases_70_79',
-            'Cases_80_89', 'Cases_90_Plus', 'Prev_LB', 'Prev', 'Prev_UB',
-            'Prev_Growth', 'R',
-            'RNA',
-            'Vacc_Est']
-master = master[rel_vars]
-
-# Turn data in to numpy ndarray
-data = master.values
-
-# We first standardize the data. Otherwise, different features have different
-# penalties
+# First we standardize the data, since this is required for the Ridge model.
 # Create object of StandardScaler class
 scaler = StandardScaler()
 
-# Perform standardization
-data = scaler.fit_transform(data)
+# Create temporary matrix of values to be standardised,
+# excluding the week dummies
+weekdays = ['Monday', 'Tuesday', 'Wednesday',
+             'Thursday', 'Friday', 'Saturday']
+temp = data.loc[:, data.columns.difference(weekdays)].values
+
+# Standardize temporary matrix
+temp = scaler.fit_transform(temp)
+
+# Replace unstandardized values by standardized values
+data.loc[:, data.columns.difference(weekdays)] = temp
+
+
+# Graph of standardised ICU Intake
+plt.scatter(data.index, data.ICU_Inflow, s=4)
+plt.plot(data.index, data.ICU_Inflow, label='ICU Admissions')
+plt.plot(data.index, data.ICU_Inflow_SMA7d, 'r--', label='Moving Average 7 Days')
+plt.xlabel('Date')
+plt.ylabel('Admissions')
+plt.legend()
+plt.show()
+
+
+##### Create y, X and train/test split ################
 
 # Create X and y data objects. y is ICU inflow
 # Remove ICU column to create X
-X = np.delete(data, 0, axis=1)
+X = np.delete(data.values, 0, axis=1)
 
 # Keep ICU column for y
-y = data[:, 0]
+y = data.values[:, 0]
 
 # Split data set into testing and training set. 80% in training set (arbitrary
 # choice)
@@ -69,6 +64,7 @@ X_train = X[:int(X.shape[0]*0.8)]
 X_test = X[int(X.shape[0]*0.8):]
 y_train = y[:int(X.shape[0]*0.8)]
 y_test = y[int(X.shape[0]*0.8):]
+
 
 #####################  Create model #######################
 
@@ -85,7 +81,8 @@ btscv = BlockingTimeSeriesSplit(n_splits=5)
 ### Model 1. Programmed GridSearch for hyperparamter my self
 
 ######## own
-own_grid = GridSearchOwn(grid=grid['alpha'], cv=btscv, X=X_train, y=y_train, model=Ridge)
+own_grid = GridSearchOwn(grid=grid['alpha'], cv=btscv, X=X_train, y=y_train,
+                         model=Ridge)
 own_grid.perform_search()
 
 best_lambda = own_grid.best_param
@@ -103,7 +100,6 @@ yhat = model.predict(X_test)
 yhat = yhat * scaler.scale_[0] + scaler.mean_[0]
 
 # add code here to compare predicted results to y_test
-
 
 ### Model 2 GridSearchCV from scikit.learn ###
 model2 = Ridge()
@@ -123,5 +119,4 @@ print('Best score for this model: {}'.format(np.absolute(results.best_score_)))
 yhat2 = search.predict(X_test)
 
 print("standardized predictions", yhat2)
-
 
