@@ -20,34 +20,46 @@ from cross_validation import BlockingTimeSeriesSplit, GridSearchOwn
 
 # Load data
 data = pd.read_csv("Data/data.csv", index_col=0)
-
+master = pd.read_csv("Data/master.csv", index_col=0)
 
 # First we standardize the data, since this is required for the Ridge model.
 # Create object of StandardScaler class
 scaler = StandardScaler()
 
 # Create temporary matrix of values to be standardised,
-# excluding the week dummies
-weekdays = ['Monday', 'Tuesday', 'Wednesday',
-             'Thursday', 'Friday', 'Saturday']
-temp = data.loc[:, data.columns.difference(weekdays)].values
+# excluding the week dummies, ICU inflow
+#vars_excl = ['ICU_Inflow', 'Monday', 'Tuesday',
+#             'Wednesday', 'Thursday', 'Friday', 'Saturday']
+vars_excl = ['ICU_Inflow']
+temp = data.loc[:, data.columns.difference(vars_excl)].values
 
 # Standardize temporary matrix
 temp = scaler.fit_transform(temp)
 
 # Replace unstandardized values by standardized values
-data.loc[:, data.columns.difference(weekdays)] = temp
+data.loc[:, data.columns.difference(vars_excl)] = temp
 
 
-# Graph of standardised ICU Intake
-plt.scatter(data.index, data.ICU_Inflow, s=4)
-plt.plot(data.index, data.ICU_Inflow, label='ICU Admissions')
-plt.plot(data.index, data.ICU_Inflow_SMA7d, 'r--', label='Moving Average 7 Days')
+# Graph of original Hosp Inflow
+plt.plot(master.index, master.Hosp_Inflow, label='Hospital Admissions')
 plt.xlabel('Date')
 plt.ylabel('Admissions')
 plt.legend()
 plt.show()
 
+# Graph of log transformed and standardised Hosp Inflow
+plt.plot(data.index, data.Hosp_Inflow, label='Hospital Admissions')
+plt.xlabel('Date')
+plt.ylabel('Admissions')
+plt.legend()
+plt.show()
+
+# Graph of log transformed and standardised Hosp Inflow
+plt.plot(data.index, data.Monday, label='Hospital Admissions')
+plt.xlabel('Date')
+plt.ylabel('Admissions')
+plt.legend()
+plt.show()
 
 ##### Create y, X and train/test split ################
 
@@ -97,9 +109,21 @@ model.fit(X_train, y_train)
 yhat = model.predict(X_test)
 
 # de-standardize the predictions
-yhat = yhat * scaler.scale_[0] + scaler.mean_[0]
+# Note this is only necessary when you standardize y
+# We do not standardize y since the predictions seem to explode when we do
+# yhat = yhat * scaler.scale_[0] + scaler.mean_[0]
 
 # add code here to compare predicted results to y_test
+
+# Graph of predictions
+plt.plot(np.linspace(1, len(y_test), len(y_test)), np.exp(y_test), label='ICU Admissions')
+plt.plot(np.linspace(1, len(yhat), len(yhat)), np.exp(yhat), label='Predictions')
+plt.xlabel('Time')
+plt.ylabel('Admissions')
+plt.legend()
+plt.show()
+
+
 
 ### Model 2 GridSearchCV from scikit.learn ###
 model2 = Ridge()
@@ -120,3 +144,10 @@ yhat2 = search.predict(X_test)
 
 print("standardized predictions", yhat2)
 
+# Graph of predictions
+plt.plot(np.linspace(1, len(y_test), len(y_test)), np.exp(y_test), label='ICU Admissions')
+plt.plot(np.linspace(1, len(yhat2), len(yhat2)), np.exp(yhat2), label='Predictions')
+plt.xlabel('Time')
+plt.ylabel('Admissions')
+plt.legend()
+plt.show()

@@ -3,20 +3,34 @@ import datetime as dt
 import pandas as pd
 import numpy as np
 from scipy.interpolate import UnivariateSpline
+import seaborn as sns
 
 # Load master data
 master = pd.read_csv("Data/master.csv")
 data = pd.read_csv("Data/data.csv")
 
 # Graph of ICU Intake
-plt.scatter(master.date, master.ICU_Inflow, s=4)
-plt.plot(master.date, master.ICU_Inflow, label='ICU Admissions')
-plt.plot(master.date, master.ICU_Inflow_SMA7d, 'r--', label='Moving Average 7 Days')
-plt.plot(master.date, master.ICU_Inflow_SMA14d, 'k-.', label='Moving Average 14 Days')
+plt.plot(master.index, master.ICU_Inflow, label='ICU Admissions')
+plt.plot(master.index, master.ICU_Inflow_SMA7d, 'r--', label='Moving Average 7 Days')
 plt.xlabel('Date')
 plt.ylabel('Admissions')
 plt.legend()
 plt.show()
+
+# Graph of empirical distribution of some variables
+sns.distplot(master.ICU_Inflow)
+plt.show()
+sns.distplot(data.ICU_Inflow)
+plt.show()
+
+sns.distplot(master.Vacc_Est)
+plt.show()
+sns.distplot(data_sd.Vacc_Est)
+plt.show()
+sns.distplot(data.Vacc_Est)
+plt.show()
+
+
 
 # Graph of ICU Intake
 plt.scatter(data.date, data.ICU_Inflow, s=4)
