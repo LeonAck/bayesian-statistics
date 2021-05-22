@@ -55,7 +55,7 @@ plt.legend()
 plt.show()
 
 # Graph of log transformed and standardised Hosp Inflow
-plt.plot(data.index, data.Monday, label='Hospital Admissions')
+plt.plot(data.index, data.Hosp_Inflow, label='Hospital Admissions')
 plt.xlabel('Date')
 plt.ylabel('Admissions')
 plt.legend()

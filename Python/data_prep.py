@@ -13,7 +13,17 @@ from sklearn.preprocessing import StandardScaler
 
 
 # Load data
-data = pd.read_csv("Data/master.csv", index_col=0)
+master = pd.read_csv("Data/master.csv", index_col=0)
+
+# Create dataframe with variables to be used in actual models
+rel_vars = ['ICU_Inflow', 'ICU_Inflow_SMA7d',
+            'Hosp_Inflow', 'Hosp_Inflow_SMA7d',
+            'Tested', 'Tested_SMA7d', 'Cases',
+            'Prev', 'RNA', 'Vacc_Est',
+            'Monday', 'Tuesday', 'Wednesday',
+            'Thursday', 'Friday', 'Saturday']
+data = master.copy()
+data = data[rel_vars]
 
 
 # Take logarithm of variables except for the following
