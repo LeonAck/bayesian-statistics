@@ -215,7 +215,7 @@ for i, x in enumerate(names):
 all_data = master.copy()
 
 # Create subset of all data with relevant variables.
-"""rel_vars = ['ICU_Inflow', 'ICU_Inflow_SMA7d',
+rel_vars = ['ICU_Inflow', 'ICU_Inflow_SMA7d',
             'ICU_Inflow_SMA14d', 'Hosp_Inflow',
             'Hosp_Inflow_SMA7d', 'Hosp_Inflow_SMA14d',
             'Total_Inflow', 'Total_Inflow_SMA7d',
@@ -223,14 +223,10 @@ all_data = master.copy()
             'Cases_Pct_SMA3d', 'Cases_Pct_SMA7d', 'Prev',
             'R', 'RNA', 'RNA_SMA3d', 'RNA_SMA7d',
             'Vacc_Est', 'Vacc_Est_Carehomes', 'Vacc_Adm_GGD',
-            'Vacc_Adm_Hosp', 'Vacc_Adm_Doctors']
-"""
-rel_vars = ['ICU_Inflow', 'ICU_Inflow_SMA7d',
-            'Hosp_Inflow', 'Hosp_Inflow_SMA7d',
-            'Tested', 'Tested_SMA7d', 'Cases',
-            'Prev', 'RNA', 'Vacc_Est',
+            'Vacc_Adm_Hosp', 'Vacc_Adm_Doctors',
             'Monday', 'Tuesday', 'Wednesday',
-            'Thursday', 'Friday', 'Saturday']
+            'Thursday', 'Friday', 'Saturday', 'Sunday']
+
 master = master[rel_vars]
 
 # Save dataframe with all data to file 'all_data'
