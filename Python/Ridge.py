@@ -38,11 +38,14 @@ y = data.values[:, 0]
 
 # Split data set into testing and training set. 80% in training set (arbitrary
 # choice)
-split_date = data.index[int(X.shape[0]*0.8)]
-X_train = X[:int(X.shape[0]*0.8)]
-X_test = X[int(X.shape[0]*0.8):]
-y_train = y[:int(X.shape[0]*0.8)]
-y_test = y[int(X.shape[0]*0.8):]
+split_pct = 0.7
+split_date = data.index[int(X.shape[0]*split_pct)]
+X_train = X[:int(X.shape[0]*split_pct)]
+X_test = X[int(X.shape[0]*split_pct):]
+y_train = y[:int(X.shape[0]*split_pct)]
+y_test = y[int(X.shape[0]*split_pct):]
+n_train = len(y_train)
+n_test = len(y_test)
 
 
 ##### Standardization ################
@@ -85,7 +88,7 @@ plt.show()
 
 # Define grid for hyperparameter search
 grid = dict()
-grid['alpha'] = np.arange(0.01, 1.01, 0.01)
+grid['alpha'] = np.arange(0.01, 100, 0.1)
 
 # Define model evaluation method with time series. We use 5 groups
 # This is a way of dividing the training set in different validations set,
@@ -112,6 +115,7 @@ print(lambda_sklearn) #Note the two lambdas should be equal
 
 
 #### Define Ridge model
+grid['alpha'] = np.arange(0.01, 100, 0.01)
 search_ridge = GridSearchCV(Ridge(), grid, scoring='neg_mean_absolute_error',
                             cv=btscv, n_jobs=-1)
 search_ridge.fit(X_train, y_train)
@@ -130,6 +134,7 @@ print(coef_ridge)
 
 
 #### Define Lasso model
+grid['alpha'] = np.arange(0.01, 1, 0.001)
 search_lasso = GridSearchCV(Lasso(), grid, scoring='neg_mean_absolute_error',
                             cv=btscv, n_jobs=-1)
 search_lasso.fit(X_train, y_train)
@@ -148,6 +153,7 @@ print(coef_lasso)
 
 
 #### Define Elastic Net model
+grid['alpha'] = np.arange(0.01, 1, 0.001)
 search_elastic = GridSearchCV(ElasticNet(), grid, scoring='neg_mean_absolute_error',
                             cv=btscv, n_jobs=-1)
 search_elastic.fit(X_train, y_train)
@@ -167,16 +173,73 @@ print(coef_elastic)
 
 ### Predictions
 
+# Define moving average function for numpy arrays
+def moving_average(x, w):
+    return np.convolve(x, np.ones(w), 'valid') / w
+
 # Predict y values 1 day ahead using the test set
+yhat_ar1 = y[(int(X.shape[0]*split_pct)-1):(len(y)-1)]
+yhat_sma3 = moving_average(y, 3)[(n_train - 3):(len(moving_average(y, 3))-1)]
+yhat_sma7 = moving_average(y, 7)[(n_train- 7):(len(moving_average(y, 7))-1)]
 yhat_ridge = model_ridge.predict(X_test)
 yhat_lasso = model_lasso.predict(X_test)
 yhat_elastic = model_elastic.predict(X_test)
-print(np.exp(yhat_ridge))
-print(np.exp(yhat_lasso))
-print(np.exp(yhat_elastic))
 
-# Predict y values h day ahead
-# Insert code
+
+# Predict y values 3 days ahead
+yhat3_ar1 = y[(int(X.shape[0]*split_pct)-3):(len(y)-3)]
+yhat3_sma3 = np.zeros(len(yhat3_ar1))
+for t in range(len(yhat3_ar1)):
+    at = y[(int(X.shape[0]*split_pct) - 3 + t)]
+    at1 = y[(int(X.shape[0]*split_pct) - 4 + t)]
+    at2 = y[(int(X.shape[0]*split_pct) - 5 + t)]
+    sma_at = moving_average(np.array([at, at1, at2]), 3)
+    sma_at1 = moving_average([sma_at[0], at, at1], 3)
+    yhat3_sma3[t] = moving_average([sma_at1[0], sma_at[0], at], 3)[0]
+yhat3_sma7 = np.zeros(len(yhat3_ar1))
+for t in range(len(yhat3_ar1)):
+    at = y[(int(X.shape[0]*split_pct) - 3 + t)]
+    at1 = y[(int(X.shape[0]*split_pct) - 4 + t)]
+    at2 = y[(int(X.shape[0]*split_pct) - 5 + t)]
+    at3 = y[(int(X.shape[0] * split_pct) - 6 + t)]
+    at4 = y[(int(X.shape[0] * split_pct) - 7 + t)]
+    at5 = y[(int(X.shape[0] * split_pct) - 8 + t)]
+    at6 = y[(int(X.shape[0] * split_pct) - 9 + t)]
+    sma_at = moving_average(np.array([at, at1, at2, at3, at4, at5, at6]), 7)
+    sma_at1 = moving_average([sma_at[0], at, at1, at2, at3, at4, at5], 7)
+    sma_at2 = moving_average([sma_at1[0], sma_at[0], at, at1, at2, at3, at4], 7)
+    yhat3_sma7[t] = moving_average([sma_at1[0], sma_at[0], at, at1, at2, at3, at4], 7)[0]
+
+# Predict y values 7 days ahead
+yhat7_ar1 = y[(int(X.shape[0]*split_pct)-7):(len(y)-7)]
+yhat7_sma3 = np.zeros(len(yhat7_ar1))
+for t in range(len(yhat7_ar1)):
+    at = y[(int(X.shape[0]*split_pct) - 3 + t)]
+    at1 = y[(int(X.shape[0]*split_pct) - 4 + t)]
+    at2 = y[(int(X.shape[0]*split_pct) - 5 + t)]
+    sma_at = moving_average(np.array([at, at1, at2]), 3)
+    sma_at1 = moving_average([sma_at[0], at, at1], 3)
+    sma_at2 = moving_average([sma_at1[0], sma_at[0], at], 3)
+    sma_at3 = moving_average([sma_at2[0], sma_at1[0], sma_at[0]], 3)
+    sma_at4 = moving_average([sma_at3[0], sma_at2[0], sma_at1[0]], 3)
+    sma_at5 = moving_average([sma_at4[0], sma_at3[0], sma_at2[0]], 3)
+    yhat7_sma3[t] = moving_average([sma_at5[0], sma_at4[0], sma_at3[0]], 3)[0]
+yhat7_sma7 = np.zeros(len(yhat7_ar1))
+for t in range(len(yhat7_ar1)):
+    at = y[(int(X.shape[0]*split_pct) - 3 + t)]
+    at1 = y[(int(X.shape[0]*split_pct) - 4 + t)]
+    at2 = y[(int(X.shape[0]*split_pct) - 5 + t)]
+    at3 = y[(int(X.shape[0] * split_pct) - 6 + t)]
+    at4 = y[(int(X.shape[0] * split_pct) - 7 + t)]
+    at5 = y[(int(X.shape[0] * split_pct) - 8 + t)]
+    at6 = y[(int(X.shape[0] * split_pct) - 9 + t)]
+    sma_at = moving_average(np.array([at, at1, at2, at3, at4, at5, at6]), 7)
+    sma_at1 = moving_average([sma_at[0], at, at1, at2, at3, at4, at5], 7)
+    sma_at2 = moving_average([sma_at1[0], sma_at[0], at, at1, at2, at3, at4], 7)
+    sma_at3 = moving_average([sma_at2[0], sma_at1[0], sma_at[0], at, at1, at2, at3], 7)
+    sma_at4 = moving_average([sma_at3[0], sma_at2[0], sma_at1[0], sma_at[0], at, at1, at2], 7)
+    sma_at5 = moving_average([sma_at4[0], sma_at3[0], sma_at2[0], sma_at1[0], sma_at[0], at, at1], 7)
+    yhat7_sma7[t] = moving_average([sma_at5[0], sma_at4[0], sma_at3[0], sma_at2[0], sma_at1[0], sma_at[0], at], 7)[0]
 
 
 ### Performance of predictions
@@ -191,7 +254,10 @@ def perf_metrics(y_true, y_pred):
     return([rsquared, rmse, mae, mape, wape])
 
 # Compare predicted results to y_test
-perf = {'Ridge': perf_metrics(y_test, yhat_ridge),
+perf = {'AR(1)':perf_metrics(y_test, yhat_ar1),
+        'SMA(3)':perf_metrics(y_test, yhat_sma3),
+        'SMA(7)':perf_metrics(y_test, yhat_sma7),
+        'Ridge': perf_metrics(y_test, yhat_ridge),
         'Lasso': perf_metrics(y_test, yhat_lasso),
         'Elastic Net': perf_metrics(y_test, yhat_elastic),
         }
@@ -199,11 +265,38 @@ perf = pd.DataFrame(perf)
 perf.index = ['R Squared', 'RMSE', 'MAE', 'MAPE', 'WAPE']
 print(perf)
 
+# Compare predicted results to y_test for 3 day ahead predictions
+perf = {'AR(1)':perf_metrics(y_test, yhat3_ar1),
+        'SMA(3)':perf_metrics(y_test, yhat3_sma3),
+        'SMA(7)':perf_metrics(y_test, yhat3_sma7),
+        }
+perf = pd.DataFrame(perf)
+perf.index = ['R Squared', 'RMSE', 'MAE', 'MAPE', 'WAPE']
+print(perf)
+
+# Compare predicted results to y_test for 7 day ahead predictions
+perf = {'AR(1)':perf_metrics(y_test, yhat7_ar1),
+        'SMA(3)':perf_metrics(y_test, yhat7_sma3),
+        'SMA(7)':perf_metrics(y_test, yhat7_sma7),
+        }
+perf = pd.DataFrame(perf)
+perf.index = ['R Squared', 'RMSE', 'MAE', 'MAPE', 'WAPE']
+print(perf)
+
 # Graph of predictions
-plt.plot(data.index[int(X.shape[0]*0.8):], np.exp(y_test), label='ICU Admissions')
-plt.plot(data.index[int(X.shape[0]*0.8):], np.exp(yhat_ridge), label='Ridge')
-plt.plot(data.index[int(X.shape[0]*0.8):], np.exp(yhat_lasso), label='Lasso')
-plt.plot(data.index[int(X.shape[0]*0.8):], np.exp(yhat_elastic), label='Elastic Net')
+plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(y_test), label='ICU Admissions')
+plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_sma3), label='SMA(3)')
+plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_sma7), label='SMA(7)')
+plt.xlabel('Time')
+plt.ylabel('Admissions')
+plt.legend()
+plt.show()
+
+# Graph of predictions
+plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(y_test), label='ICU Admissions')
+plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_ridge), label='Ridge')
+plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_lasso), label='Lasso')
+plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_elastic), label='Elastic Net')
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
@@ -211,12 +304,22 @@ plt.show()
 
 # Graph of train fit and predictions
 plt.plot(data.index, np.exp(y), label='ICU Admissions')
-plt.plot(data.index[:int(X.shape[0]*0.8)], np.exp(model_ridge.predict(X_train)), label='Ridge Train Fit')
-plt.plot(data.index[:int(X.shape[0]*0.8)], np.exp(model_lasso.predict(X_train)), label='Lasso Train Fit')
-plt.plot(data.index[:int(X.shape[0]*0.8)], np.exp(model_elastic.predict(X_train)), label='Elastic Net Train Fit')
-plt.plot(data.index[int(X.shape[0]*0.8):], np.exp(yhat_ridge), label='Ridge Test Fit')
-plt.plot(data.index[int(X.shape[0]*0.8):], np.exp(yhat_lasso), label='Lasso Test Fit')
-plt.plot(data.index[int(X.shape[0]*0.8):], np.exp(yhat_elastic), label='Elastic Net Test Fit')
+plt.plot(data.index[:int(X.shape[0]*split_pct)], np.exp(model_ridge.predict(X_train)), label='Ridge Train Fit')
+plt.plot(data.index[:int(X.shape[0]*split_pct)], np.exp(model_lasso.predict(X_train)), label='Lasso Train Fit')
+plt.plot(data.index[:int(X.shape[0]*split_pct)], np.exp(model_elastic.predict(X_train)), label='Elastic Net Train Fit')
+plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_ridge), label='Ridge Test Fit')
+plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_lasso), label='Lasso Test Fit')
+plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_elastic), label='Elastic Net Test Fit')
+plt.xlabel('Time')
+plt.ylabel('Admissions')
+plt.legend()
+plt.show()
+
+
+# Graph of predictions
+plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(y_test), label='ICU Admissions')
+plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat3_sma3), label='SMA(3)')
+plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat3_sma7), label='SMA(7)')
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
