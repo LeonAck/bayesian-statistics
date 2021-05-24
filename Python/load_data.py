@@ -99,8 +99,8 @@ master = pd.concat([agg_ggd_tests_wide, data_lcps_admissions,
                     data_rivm_prevalence, data_rivm_reproduction,
                     data_rivm_tests, data_vaccines, data_rna], axis=1)
 
-# Sort master dataframe to get newest data first
-master = master.sort_values(by='date', ascending=False)
+# Sort master dataframe to get oldest data first
+master = master.sort_values(by='date', ascending=True)
 
 # Delete superfluous variables
 master = master.drop(labels=[('cases', '<50'), ('cases', 'Unknown'),
@@ -182,26 +182,41 @@ master.loc[['2021-02-07'], ['Cases', 'Cases_Pct']] = np.NAN
 # Interpolate nans in RNA data and in vaccin columns
 master = master.interpolate()
 
+
+### Defining additional variables
+
+# Calculate 3-day and 7-day SMA of several variables
+master['ICU_Inflow_SMA3d'] = master.ICU_Inflow.rolling(window=3).mean()
+master['Hosp_Inflow_SMA3d'] = master.Hosp_Inflow.rolling(window=3).mean()
+master['Tested_SMA3d'] = master.Tested.rolling(window=3).mean()
+master['Cases_SMA3d'] = master.Cases.rolling(window=3).mean()
+master['Cases_SMA7d'] = master.Cases.rolling(window=7).mean()
+master['Cases_Pct_SMA3d'] = master.Cases_Pct.rolling(window=3).mean()
+master['Cases_Pct_SMA7d'] = master.Cases_Pct.rolling(window=7).mean()
+master['Vacc_Est_SMA3d'] = master.Vacc_Est.rolling(window=3).mean()
+master['Vacc_Est_SMA7d'] = master.Vacc_Est.rolling(window=7).mean()
+
+
 # Calculate R and Prevalence as average between LB and UB
 master.R = (master.R_LB + master.R_UB)/2
 master.Prev = (master.Prev_LB + master.Prev_UB)/2
 
 # Delay R, Prevalence and RNA by 7 days to get values at recent days
-master.R = master.R.shift(-7)
-master.Prev = master.Prev.shift(-7)
-master.RNA = master.RNA.shift(-7)
-master.RNA_SMA3d = master.RNA_SMA3d.shift(-7)
-master.RNA_SMA7d = master.RNA_SMA7d.shift(-7)
+master.R = master.R.shift(7)
+master.Prev = master.Prev.shift(7)
+master.RNA = master.RNA.shift(7)
+master.RNA_SMA3d = master.RNA_SMA3d.shift(7)
+master.RNA_SMA7d = master.RNA_SMA7d.shift(7)
 
 # Remove all data up to and including 29-10-2020 as SMA variables contain nan
 # This is a temporary solution. We might later decide to exclude these variables
 # to use the observations before 29-10-2020 as well
-master = master.loc[:'2020-10-30']
+master = master.loc['2020-10-30':]
 
 # We downloaded the data on 2021-05-05.
 # We remove all data after 2021-05-02 since many variables are unavailable. This is because we use open source data.
 # When our model is employed by the LCPS all relevant data is available.
-master = master.loc['2021-05-02':]
+master = master.loc[:'2021-05-02']
 
 # Add day of the week dummies
 names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -215,22 +230,20 @@ for i, x in enumerate(names):
 all_data = master.copy()
 
 # Create subset of all data with relevant variables.
-"""rel_vars = ['ICU_Inflow', 'ICU_Inflow_SMA7d',
-            'ICU_Inflow_SMA14d', 'Hosp_Inflow',
+rel_vars = ['ICU_Inflow', 'ICU_Inflow_SMA3d',
+            'ICU_Inflow_SMA7d', 'ICU_Inflow_SMA14d',
+            'Hosp_Inflow', 'Hosp_Inflow_SMA3d',
             'Hosp_Inflow_SMA7d', 'Hosp_Inflow_SMA14d',
-            'Total_Inflow', 'Total_Inflow_SMA7d',
-            'Tested', 'Tested_SMA7d', 'Cases', 'Cases_Pct',
-            'Cases_Pct_SMA3d', 'Cases_Pct_SMA7d', 'Prev',
-            'R', 'RNA', 'RNA_SMA3d', 'RNA_SMA7d',
-            'Vacc_Est', 'Vacc_Est_Carehomes', 'Vacc_Adm_GGD',
-            'Vacc_Adm_Hosp', 'Vacc_Adm_Doctors']
-"""
-rel_vars = ['ICU_Inflow', 'ICU_Inflow_SMA7d',
-            'Hosp_Inflow', 'Hosp_Inflow_SMA7d',
-            'Tested', 'Tested_SMA7d', 'Cases',
-            'Prev', 'RNA', 'Vacc_Est',
+            'Tested', 'Tested_SMA3d', 'Tested_SMA7d',
+            'Cases', 'Cases_SMA3d', 'Cases_SMA7d',
+            'Cases_Pct', 'Cases_Pct_SMA3d', 'Cases_Pct_SMA7d',
+            'Prev', 'R', 'RNA', 'RNA_SMA3d', 'RNA_SMA7d',
+            'Vacc_Est', 'Vacc_Est_SMA3d', 'Vacc_Est_SMA7d',
+            'Vacc_Est_Carehomes', 'Vacc_Adm_GGD',
+            'Vacc_Adm_Hosp', 'Vacc_Adm_Doctors',
             'Monday', 'Tuesday', 'Wednesday',
-            'Thursday', 'Friday', 'Saturday']
+            'Thursday', 'Friday', 'Saturday', 'Sunday']
+
 master = master[rel_vars]
 
 # Save dataframe with all data to file 'all_data'

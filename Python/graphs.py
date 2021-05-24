@@ -3,18 +3,15 @@ import datetime as dt
 import pandas as pd
 import numpy as np
 import copy
+import seaborn as sns
 from scipy.interpolate import UnivariateSpline
 
 """
 eerst log dan first difference van regressors"""
-# Load master data
+# Load data
 master = pd.read_csv("Data/master.csv")
-# replace date where vaccin columns are all zero with nan
-master.loc[[21], ['Vacc_Est', 'Vacc_Est_Carehomes', 'Vacc_Adm_GGD',
-            'Vacc_Adm_Hosp', 'Vacc_Adm_Doctors']] = np.NAN
+data = pd.read_csv("Data/data.csv")
 
-# interpolate nans in RNA data and in vaccin columns
-master = master.interpolate()
 """
 for column in master.columns:
     try:
@@ -23,8 +20,10 @@ for column in master.columns:
     except (ValueError, AttributeError, TypeError):
         pass
 """
+
 # Convert date column to datetime
 master.date = pd.to_datetime(master.date, format='%Y-%m-%d')
+data.date = pd.to_datetime(data.date, format='%Y-%m-%d')
 
 # Describe the data
 master[['ICU_Inflow', 'RNA', 'Hosp_Inflow', 'Cases', 'Vacc_Est']].describe()
@@ -63,7 +62,7 @@ plt.show()
 
 # compare vacc to ICU inflow
 plt.plot(master.date, np.log(master.ICU_Inflow_SMA7d)*4, label='ICU Admissions')
-plt.plot(master.date, np.log(master.Vacc_Est), label='estimated vaccinations')
+plt.plot(master.date, np.pad(data.Vacc_Est, (0, 1), 'constant'), label='estimated vaccinations')
 plt.xlabel('Date')
 plt.ylabel('number')
 plt.legend()
@@ -77,8 +76,11 @@ plt.ylabel('number')
 plt.legend()
 plt.show()
 
+# Graph of empirical distribution of ICU Inflow
+sns.distplot(master.ICU_Inflow)
+plt.show()
+
 # Graph of ICU Intake
-plt.scatter(master.date, master.ICU_Inflow, s=4)
 plt.plot(master.date, master.ICU_Inflow, label='ICU Admissions')
 plt.plot(master.date, master.ICU_Inflow_SMA7d, 'r--', label='Moving Average 7 Days')
 plt.plot(master.date, master.ICU_Inflow_SMA14d, 'k-.', label='Moving Average 14 Days')
@@ -114,8 +116,6 @@ plt.show()
 
 # Graph of prevalence
 plt.plot(master.date, master.Prev, label='Number of infectious people')
-plt.plot(master.date, master.Prev_LB, 'k--', label='Lowerbound')
-plt.plot(master.date, master.Prev_UB, 'k--', label='Upperbound')
 plt.xlabel('Date')
 plt.ylabel('Infectious People')
 plt.legend()
@@ -123,8 +123,6 @@ plt.show()
 
 # Graph of R number
 plt.plot(master.date, master.R, label='Reproduction Number')
-plt.plot(master.date, master.R_LB, 'k--', label='Lowerbound')
-plt.plot(master.date, master.R_UB, 'k--', label='Upperbound')
 plt.xlabel('Date')
 plt.ylabel('R')
 plt.legend()
@@ -147,7 +145,7 @@ plt.ylabel('Cases')
 plt.legend()
 plt.show()
 
-
+"""
 # Test to obtain smoothing spline of ICU inflow
 # Not sure if I am doing this right
 x = np.linspace(0, 197, 198)
@@ -157,4 +155,4 @@ xs = np.linspace(0, 197, 198)
 plt.plot(master.date, y, 'ro', ms=5)
 plt.plot(master.date, ss(xs), 'g')
 plt.show()
-
+"""
