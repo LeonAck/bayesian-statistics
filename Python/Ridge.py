@@ -124,7 +124,6 @@ plt.legend()
 plt.show()
 
 
-
 ### Model 2 GridSearchCV from scikit.learn ###
 model2 = Ridge()
 
