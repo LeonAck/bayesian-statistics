@@ -36,9 +36,16 @@ X = np.delete(data.values, 0, axis=1)
 # Keep ICU column for y
 y = data.values[:, 0]
 
+# We standardize the data, since this is required for the Ridge model.
+# Create object of StandardScaler class
+scaler = StandardScaler()
+
+# Standardize regressor matrix
+X = scaler.fit_transform(X)
+
 # Split data set into testing and training set. 80% in training set (arbitrary
 # choice)
-split_pct = 0.7
+split_pct = 0.8
 split_date = data.index[int(X.shape[0]*split_pct)]
 X_train = X[:int(X.shape[0]*split_pct)]
 X_test = X[int(X.shape[0]*split_pct):]
@@ -47,18 +54,11 @@ y_test = y[int(X.shape[0]*split_pct):]
 n_train = len(y_train)
 n_test = len(y_test)
 
+X_train.mean(axis=0)
+X_test.mean(axis=0)
+X_train.std(axis=0)
+X_test.std(axis=0)
 
-##### Standardization ################
-
-# We standardize the data, since this is required for the Ridge model.
-# Create object of StandardScaler class
-scaler = StandardScaler()
-
-# Standardize regressor matrix
-X_train = scaler.fit_transform(X_train)
-
-# Standardize test regressors using train scaling
-X_test = scaler.transform(X_test)
 
 """ Some Graphs
 # Graph of ICU Inflow
@@ -94,7 +94,7 @@ grid['alpha'] = np.arange(0.01, 100, 0.1)
 # This is a way of dividing the training set in different validations set,
 # while considering the dependence between observations
 # Code is found in cross_validation.py
-btscv = BlockingTimeSeriesSplit(n_splits=5)
+btscv = BlockingTimeSeriesSplit(n_splits=3)
 
 
 ### Compare Grid Searches
@@ -186,6 +186,7 @@ yhat_lasso = model_lasso.predict(X_test)
 yhat_elastic = model_elastic.predict(X_test)
 
 
+"""
 # Predict y values 3 days ahead
 yhat3_ar1 = y[(int(X.shape[0]*split_pct)-3):(len(y)-3)]
 yhat3_sma3 = np.zeros(len(yhat3_ar1))
@@ -240,7 +241,7 @@ for t in range(len(yhat7_ar1)):
     sma_at4 = moving_average([sma_at3[0], sma_at2[0], sma_at1[0], sma_at[0], at, at1, at2], 7)
     sma_at5 = moving_average([sma_at4[0], sma_at3[0], sma_at2[0], sma_at1[0], sma_at[0], at, at1], 7)
     yhat7_sma7[t] = moving_average([sma_at5[0], sma_at4[0], sma_at3[0], sma_at2[0], sma_at1[0], sma_at[0], at], 7)[0]
-
+"""
 
 ### Performance of predictions
 
@@ -265,6 +266,7 @@ perf = pd.DataFrame(perf)
 perf.index = ['R Squared', 'RMSE', 'MAE', 'MAPE', 'WAPE']
 print(perf)
 
+"""
 # Compare predicted results to y_test for 3 day ahead predictions
 perf = {'AR(1)':perf_metrics(y_test, yhat3_ar1),
         'SMA(3)':perf_metrics(y_test, yhat3_sma3),
@@ -282,6 +284,8 @@ perf = {'AR(1)':perf_metrics(y_test, yhat7_ar1),
 perf = pd.DataFrame(perf)
 perf.index = ['R Squared', 'RMSE', 'MAE', 'MAPE', 'WAPE']
 print(perf)
+"""
+
 
 # Graph of predictions
 plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(y_test), label='ICU Admissions')
@@ -310,16 +314,6 @@ plt.plot(data.index[:int(X.shape[0]*split_pct)], np.exp(model_elastic.predict(X_
 plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_ridge), label='Ridge Test Fit')
 plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_lasso), label='Lasso Test Fit')
 plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_elastic), label='Elastic Net Test Fit')
-plt.xlabel('Time')
-plt.ylabel('Admissions')
-plt.legend()
-plt.show()
-
-
-# Graph of predictions
-plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(y_test), label='ICU Admissions')
-plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat3_sma3), label='SMA(3)')
-plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat3_sma7), label='SMA(7)')
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
