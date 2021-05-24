@@ -41,13 +41,11 @@ class LCPS:
     def objective(self, x, s):
         return self.loss(x, s) + self.gamma * self.regularizer(x)
 
-    def predict(self, x, t):
+    def predict(self, x, s, w, t):
         """
         Function to get the t-day ahead prediction
-        t is an attribute of the class
         """
-        # week day nog toevoegen
-        return np.exp(x[1:] + t * (x[1:] - x[:-1]))
+        return np.exp(x[1:] + t * (x[1:] - x[:-1]) + s[w[t:]])
 
     def mse(self, y):
         return None
@@ -59,27 +57,24 @@ class LCPS:
         obj = cp.Minimize(self.objective(x, s))
         problem = cp.Problem(obj)
         problem.solve('ECOS')
-        print(x.value)
-        print(s.value)
         self.x = np.array(x.value)
+        self.s = np.array(s.value)
 
 
-def test(method, y_train, y_test, w_train, w_test):
-    np.random.seed(3)
-
-    p = 50
-    sigma = 5
-
-    weekday = master.weekday
+def test(method):
 
     algo = method(y_train, w_train, gamma=1)
     algo.solve()
+    print("s", algo.s)
     print("algo_x", algo.x)
     print("y", np.log(y_train))
 
+    d = {'x': algo.x, 'weekday': w_train}
+    #data_pred = pd.DataFrame(data=d)
+    algo.predict(algo.x, algo.s, master.weekday, t=1)
 
 
-# test(LCPS)
+test(LCPS)
 """
 algo = LCPS(y, gamma=1)
 algo.solve()
