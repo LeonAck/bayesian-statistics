@@ -12,12 +12,12 @@ from sklearn.model_selection import RepeatedKFold
 from sklearn.linear_model import Ridge, Lasso, PoissonRegressor, ElasticNet
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
-import sklearn.metrics as metrics
+
 # (Roel) I don't know why but I need to add the code below
 # to be able to import cross_validation
 import sys
 sys.path.append("Python")
-from cross_validation import BlockingTimeSeriesSplit, GridSearchOwn
+from cross_validation import BlockingTimeSeriesSplit, GridSearchOwn, perf_metrics
 
 
 # Load data
@@ -245,14 +245,7 @@ for t in range(len(yhat7_ar1)):
 
 ### Performance of predictions
 
-# Function to calculate performance metrics
-def perf_metrics(y_true, y_pred):
-    rsquared = 1 - sum((np.exp(y_true) - np.exp(y_pred))**2)/sum((np.exp(y_true) - np.exp(y_true).mean())**2)
-    rmse = metrics.mean_squared_error(np.exp(y_true), np.exp(y_pred), squared=False)
-    mae = metrics.mean_absolute_error(np.exp(y_true), np.exp(y_pred))
-    mape = metrics.mean_absolute_percentage_error(np.exp(y_true), np.exp(y_pred))
-    wape = sum(abs(np.exp(y_true) - np.exp(y_pred))) / sum(np.exp(y_true))
-    return([rsquared, rmse, mae, mape, wape])
+
 
 # Compare predicted results to y_test
 perf = {'AR(1)':perf_metrics(y_test, yhat_ar1),
