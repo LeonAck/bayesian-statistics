@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 import cvxpy as cp
-from sklearn.model_selection import cross_val_score
+from cross_validation import perf_metrics
 
 # load data
 master = pd.read_csv("Data/master.csv")
@@ -26,7 +26,11 @@ w_test = w[int(y.shape[0]*0.7):]
 
 
 class LCPS:
+    """
+    Class to recreate LCPS model
+    Minimization with trend penalty term
 
+    """
     def __init__(self, y, w=None, gamma=10):
         self.y = y
         self.gamma = gamma
@@ -55,12 +59,10 @@ class LCPS:
 
         return np.exp(x[-1] + t * (x[-1] - x[-2]) + s[w_pred])
 
-    def mse(self, y):
-        return None
-
     def solve(self):
         p = self.y.shape
         x = cp.Variable(p)
+        # variable for days of the week
         s = cp.Variable((7,))
         obj = cp.Minimize(self.objective(x, s))
         problem = cp.Problem(obj)
@@ -79,13 +81,36 @@ def test(method):
     print("y", np.log(y_train))
 
     pred_y = []
-    for t in range(1, len(y_test)):
+    for t in range(1, len(y_test)+1):
         pred_y.append(algo.predict(algo.x, algo.s, w_train, t=t))
 
-    print(np.array(pred_y))
+    # exp back to log to insert into formula
+    print(perf_metrics(np.log(y_test), np.log(pred_y)))
+
+# test(LCPS)
 
 
-test(LCPS)
+def rolling_pred(method, y, w, t):
+    """
+    Rolling predctions for model. Uses data up to one day To predict t-day
+    prediction. Then moves up one day to and predicts t-day from that day
+    """
+    y_pred = []
+
+    for i in range(6, len(y)-7):
+
+        y_train = y[:i]
+        w_train = w[:i]
+        print(i, y_train)
+        algo = method(y_train, w_train, gamma=10)
+        algo.solve()
+
+        y_pred.append(algo.predict(algo.x, algo.s, w_train, t=t))
+    print(y_pred)
+    return y_pred
+
+
+rolling_pred(LCPS, y=y, w=w, t=3)
 
 """
 algo = LCPS(y, gamma=1)

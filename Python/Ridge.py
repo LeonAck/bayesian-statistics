@@ -7,8 +7,6 @@ Op basis van deze link https://machinelearningmastery.com/ridge-regression-with-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import RepeatedKFold
 from sklearn.linear_model import Ridge, Lasso, PoissonRegressor, ElasticNet
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
