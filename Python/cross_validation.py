@@ -65,8 +65,10 @@ class GridSearchOwn:
 # Function to calculate performance metrics
 def perf_metrics(y_true, y_pred):
     rsquared = 1 - sum((np.exp(y_true) - np.exp(y_pred))**2)/sum((np.exp(y_true) - np.exp(y_true).mean())**2)
+    me = (np.exp(y_true) - np.exp(y_pred)).mean()
     rmse = metrics.mean_squared_error(np.exp(y_true), np.exp(y_pred), squared=False)
     mae = metrics.mean_absolute_error(np.exp(y_true), np.exp(y_pred))
     mape = metrics.mean_absolute_percentage_error(np.exp(y_true), np.exp(y_pred))
     wape = sum(abs(np.exp(y_true) - np.exp(y_pred))) / sum(np.exp(y_true))
-    return([rsquared, rmse, mae, mape, wape])
+
+    return([rsquared, me, rmse, mae, mape, wape])

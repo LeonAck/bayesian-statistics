@@ -52,6 +52,7 @@ y_test = y[int(X.shape[0]*split_pct):]
 n_train = len(y_train)
 n_test = len(y_test)
 
+#Check whether mean and std are roughly equal for all regressors
 X_train.mean(axis=0)
 X_test.mean(axis=0)
 X_train.std(axis=0)
@@ -102,22 +103,22 @@ own_grid = GridSearchOwn(grid=grid['alpha'], cv=btscv, X=X_train, y=y_train,
                          model=Ridge)
 own_grid.perform_search()
 lambda_own = own_grid.best_param
-print(lambda_own)
+print("Lambda from own grid search:", lambda_own)
 
 ######## Grid search from sklearn
 search = GridSearchCV(Ridge(), grid, scoring='neg_mean_absolute_error',
                       cv=btscv, n_jobs=-1)
 search.fit(X_train, y_train)
 lambda_sklearn = search.best_params_['alpha']
-print(lambda_sklearn) #Note the two lambdas should be equal
+print("Lambda from sklearn grid search:", lambda_sklearn) #Note the two lambdas should be equal
 
 
 #### Define Ridge model
-grid['alpha'] = np.arange(0.01, 100, 0.01)
+grid['alpha'] = np.arange(0.01, 50, 0.01)
 search_ridge = GridSearchCV(Ridge(), grid, scoring='neg_mean_absolute_error',
                             cv=btscv, n_jobs=-1)
 search_ridge.fit(X_train, y_train)
-print(search_ridge.best_params_['alpha'])
+print("Ridge lambda: \n", search_ridge.best_params_['alpha'])
 
 # Define Ridge model with hyper parameter
 model_ridge = Ridge(alpha=search_ridge.best_params_['alpha'])
@@ -128,7 +129,7 @@ model_ridge.fit(X_train, y_train)
 # Coefficients
 coef_ridge = pd.DataFrame({'Variable': data.columns[1:],
         'Coefficient': model_ridge.coef_})
-print(coef_ridge)
+print("Ridge Coefficients: \n", coef_ridge)
 
 
 #### Define Lasso model
@@ -136,7 +137,7 @@ grid['alpha'] = np.arange(0.01, 1, 0.001)
 search_lasso = GridSearchCV(Lasso(), grid, scoring='neg_mean_absolute_error',
                             cv=btscv, n_jobs=-1)
 search_lasso.fit(X_train, y_train)
-print(search_lasso.best_params_['alpha'])
+print("Lasso lambda: \n", search_lasso.best_params_['alpha'])
 
 # Define Lasso model with hyper parameter
 model_lasso = Lasso(alpha=search_lasso.best_params_['alpha'])
@@ -147,7 +148,7 @@ model_lasso.fit(X_train, y_train)
 # Coefficients
 coef_lasso = pd.DataFrame({'Variable': data.columns[1:],
         'Coefficient': model_lasso.coef_})
-print(coef_lasso)
+print("Lasso Coefficients: \n", coef_lasso)
 
 
 #### Define Elastic Net model
@@ -155,7 +156,7 @@ grid['alpha'] = np.arange(0.01, 1, 0.001)
 search_elastic = GridSearchCV(ElasticNet(), grid, scoring='neg_mean_absolute_error',
                             cv=btscv, n_jobs=-1)
 search_elastic.fit(X_train, y_train)
-print(search_elastic.best_params_['alpha'])
+print("Elastic Net lambda: \n", search_elastic.best_params_['alpha'])
 
 # Define Elastic Net model with hyper parameter
 model_elastic = ElasticNet(alpha=search_elastic.best_params_['alpha'])
@@ -166,7 +167,7 @@ model_elastic.fit(X_train, y_train)
 # Coefficients
 coef_elastic = pd.DataFrame({'Variable': data.columns[1:],
         'Coefficient': model_elastic.coef_})
-print(coef_elastic)
+print("Elastic Net Coefficients: \n", coef_elastic)
 
 
 ### Predictions
@@ -243,19 +244,29 @@ for t in range(len(yhat7_ar1)):
 
 ### Performance of predictions
 
+# Performance of train fit
+perf_train = {'AR(1)':perf_metrics(y_train[6:], y_train[5:(len(y_train)-1)]),
+        'SMA(3)':perf_metrics(y_train[6:], moving_average(y, 3)[4:(len(y_train)-2)]),
+        'SMA(7)':perf_metrics(y_train[6:], moving_average(y, 7)[:(len(y_train)-6)]),
+        'Ridge': perf_metrics(y_train[6:], model_ridge.predict(X_train)[6:]),
+        'Lasso': perf_metrics(y_train[6:], model_lasso.predict(X_train)[6:]),
+        'Elastic Net': perf_metrics(y_train[6:], model_elastic.predict(X_train)[6:]),
+        }
+perf_train = pd.DataFrame(perf_train)
+perf_train.index = ['R Squared', 'ME', 'RMSE', 'MAE', 'MAPE', 'WAPE']
+print("Train fit performance: \n", perf_train)
 
-
-# Compare predicted results to y_test
-perf = {'AR(1)':perf_metrics(y_test, yhat_ar1),
+# Performance of test predictions
+perf_test = {'AR(1)':perf_metrics(y_test, yhat_ar1),
         'SMA(3)':perf_metrics(y_test, yhat_sma3),
         'SMA(7)':perf_metrics(y_test, yhat_sma7),
         'Ridge': perf_metrics(y_test, yhat_ridge),
         'Lasso': perf_metrics(y_test, yhat_lasso),
         'Elastic Net': perf_metrics(y_test, yhat_elastic),
         }
-perf = pd.DataFrame(perf)
-perf.index = ['R Squared', 'RMSE', 'MAE', 'MAPE', 'WAPE']
-print(perf)
+perf_test = pd.DataFrame(perf_test)
+perf_test.index = ['R Squared', 'ME', 'RMSE', 'MAE', 'MAPE', 'WAPE']
+print("Test fit performance: \n", perf_test)
 
 """
 # Compare predicted results to y_test for 3 day ahead predictions
