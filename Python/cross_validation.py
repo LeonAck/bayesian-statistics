@@ -57,7 +57,7 @@ class GridSearchOwn:
             self.score["{}".format(par)] = np.mean(cross_val_score(model, self.X, self.y,
                         scoring='neg_mean_absolute_error', cv=self.cv, n_jobs=-1))
 
-        # save best value for the hyper paramter corresponding to the least negative
+        # save best value for the hyper parameter corresponding to the least negative
         # value of the evaluation metric
         self.best_param = max(self.score, key=self.score.get)
 

@@ -2,6 +2,9 @@
 import numpy as np
 import pandas as pd
 import cvxpy as cp
+import matplotlib.pyplot as plt
+import sys
+sys.path.append("Python")
 from cross_validation import perf_metrics
 
 # load data
@@ -13,16 +16,17 @@ master = master.sort_values(by='date', ascending=True)
 # 0 is Monday, ..., 6 is Sunday
 master['weekday'] = master.date.dt.weekday
 
-y = master.ICU_Inflow
-w = master.weekday
+y = master.ICU_Inflow.values
+w = master.weekday.values
 # Split data set into testing and training set. 80% in training set (arbitrary
 # choice)
 
 # dit omdraaien bij nieuwe load_data
-y_train = y[:int(y.shape[0]*0.7)]
-y_test = y[int(y.shape[0]*0.7):]
-w_train = w[:int(y.shape[0]*0.7)]
-w_test = w[int(y.shape[0]*0.7):]
+split_pct = 0.8
+y_train = y[:int(y.shape[0]*split_pct)]
+y_test = y[int(y.shape[0]*split_pct):]
+w_train = w[:int(y.shape[0]*split_pct)]
+w_test = w[int(y.shape[0]*split_pct):]
 
 
 class LCPS:
@@ -55,7 +59,7 @@ class LCPS:
         """
         # w_pred is the weekday of the day we want to predict. Given the weekday
         # of x[-1]
-        w_pred = w_train.iloc[-7 + (t-1)]
+        w_pred = w_train[-7 + (t-1)]
 
         return np.exp(x[-1] + t * (x[-1] - x[-2]) + s[w_pred])
 
@@ -110,7 +114,29 @@ def rolling_pred(method, y, w, t):
     return y_pred
 
 
-rolling_pred(LCPS, y=y, w=w, t=3)
+def rolling_pred_testset(method, y_train, y_test, w_train, w_test, t=1):
+    """
+    Function to perform a rolling prediction for values in the test set.
+    Model is first estimated on training set, but data points from the test
+    set are added iteratively.
+    """
+    y_pred = []
+
+    for i in range(len(y_test)):
+        if i > 0:
+            y_train = np.append(y_train, y_test[i])
+            w_train = np.append(w_train, w_test[i])
+
+        algo = method(y_train, w_train, gamma=10)
+        algo.solve()
+
+        y_pred.append(algo.predict(algo.x, algo.s, w_train, t=t))
+
+    return y_pred
+
+y_pred = rolling_pred_testset(LCPS, y_train, y_test, w_train, w_test, t=1)
+# y_pred = rolling_pred(LCPS, y=y, w=w, t=1)
+
 
 """
 algo = LCPS(y, gamma=1)
