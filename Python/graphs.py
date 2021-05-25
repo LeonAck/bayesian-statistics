@@ -26,14 +26,14 @@ master.date = pd.to_datetime(master.date, format='%Y-%m-%d')
 data.date = pd.to_datetime(data.date, format='%Y-%m-%d')
 
 # Describe the data
-
+master[['ICU_Inflow', 'RNA', 'Hosp_Inflow', 'Cases', 'Vacc_Est']].describe()
 
 # sort data frame
 # master = master.sort_values(by='date', ascending=True)
 # master_no_diff = copy.deepcopy(master)
 # master_no_diff.sort_vlaues(by='date', ascending=True)
 # take first difference of data except for date column
-#for column in master.columns[1:]:
+# for column in master.columns[1:]:
  #   master[column] = master[column].diff()
 
 # compare cases to ICU inflow
@@ -53,7 +53,7 @@ plt.legend()
 plt.show()
 
 # compare hospital to ICU inflow
-plt.plot(master.date, master.ICU_Inflow_SMA7d*4, label='ICU Admissions')
+plt.plot(master.date, master.ICU_Inflow_SMA7d*5, label='ICU Admissions')
 plt.plot(master.date, master.Hosp_Inflow_SMA7d, label='Hospital admissions')
 plt.xlabel('Date')
 plt.ylabel('number')

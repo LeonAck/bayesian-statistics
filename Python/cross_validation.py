@@ -3,8 +3,8 @@ Code from https://hub.packtpub.com/cross-validation-strategies-for-time-series-f
 To make BlockingTimeSeriesSplit
 """
 import numpy as np
-from sklearn.linear_model import Ridge
 from sklearn.model_selection import cross_val_score
+import sklearn.metrics as metrics
 
 
 class BlockingTimeSeriesSplit():
@@ -60,3 +60,13 @@ class GridSearchOwn:
         # save best value for the hyper paramter corresponding to the least negative
         # value of the evaluation metric
         self.best_param = max(self.score, key=self.score.get)
+
+
+# Function to calculate performance metrics
+def perf_metrics(y_true, y_pred):
+    rsquared = 1 - sum((np.exp(y_true) - np.exp(y_pred))**2)/sum((np.exp(y_true) - np.exp(y_true).mean())**2)
+    rmse = metrics.mean_squared_error(np.exp(y_true), np.exp(y_pred), squared=False)
+    mae = metrics.mean_absolute_error(np.exp(y_true), np.exp(y_pred))
+    mape = metrics.mean_absolute_percentage_error(np.exp(y_true), np.exp(y_pred))
+    wape = sum(abs(np.exp(y_true) - np.exp(y_pred))) / sum(np.exp(y_true))
+    return([rsquared, rmse, mae, mape, wape])
