@@ -18,7 +18,7 @@ import sys
 
 sys.path.append("Python")
 from cross_validation import BlockingTimeSeriesSplit, GridSearchOwn, perf_metrics
-from Models_LCPS import rolling_pred_testset, LCPS, y_pred
+from Models_LCPS import rolling_pred_testset, LCPS
 
 # Load data
 master = pd.read_csv("Data/master.csv", index_col=0)  # Regressors not lagged (=unrealistic)
@@ -238,6 +238,15 @@ for t in range(len(yhat7_ar1)):
     yhat7_sma7[t] = moving_average([sma_at5[0], sma_at4[0], sma_at3[0], sma_at2[0], sma_at1[0], sma_at[0], at], 7)[0]
 """
 
+# load LCPS_rolling one-day predictions
+my_file = "y_pred_rolling_LCPS.txt"
+
+with open(my_file, 'r') as f:
+    yhat_lcps_oneday = eval(f.read())
+
+# take log of yhat to scale to the same as the other predictions
+yhat_lcps_oneday = np.log(yhat_lcps_oneday)
+
 ### Performance of predictions
 
 
@@ -248,6 +257,7 @@ perf = {'AR(1)': perf_metrics(y_test, yhat_ar1),
         'Ridge': perf_metrics(y_test, yhat_ridge),
         'Lasso': perf_metrics(y_test, yhat_lasso),
         'Elastic Net': perf_metrics(y_test, yhat_elastic),
+        'LCPS one-day': perf_metrics(y_test, yhat_lcps_oneday)
         }
 perf = pd.DataFrame(perf)
 perf.index = ['R Squared', 'RMSE', 'MAE', 'MAPE', 'WAPE']
