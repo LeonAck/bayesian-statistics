@@ -105,18 +105,26 @@ print("Lambda from own grid search:", lambda_own)
 
 ######## Grid search from sklearn
 search = GridSearchCV(Ridge(), grid, scoring='neg_mean_absolute_error',
-                      cv=btscv, n_jobs=-1)
+                      cv=btscv, n_jobs=-1, return_train_score=True)
 search.fit(X_train, y_train)
 lambda_sklearn = search.best_params_['alpha']
 print("Lambda from sklearn grid search:", lambda_sklearn) #Note the two lambdas should be equal
 
 
 #### Define Ridge model
-grid['alpha'] = np.arange(0.01, 100, 0.01)
+grid['alpha'] = np.arange(2, 200, 0.1)
 search_ridge = GridSearchCV(Ridge(), grid, scoring='neg_mean_absolute_error',
-                            cv=btscv, n_jobs=-1)
+                            cv=btscv, n_jobs=-1, return_train_score=True)
 search_ridge.fit(X_train, y_train)
 print("Ridge lambda: \n", search_ridge.best_params_['alpha'])
+
+# Graph with hyperparameter estimates
+lambda_ridge_scores = search_ridge.cv_results_['mean_test_score']
+plt.plot(grid['alpha'], lambda_ridge_scores, label='Ridge Cross-Validation')
+plt.xlabel('Alpha')
+plt.ylabel('Score')
+plt.legend()
+plt.show()
 
 # Define Ridge model with hyper parameter
 model_ridge = Ridge(alpha=search_ridge.best_params_['alpha'])
@@ -130,11 +138,19 @@ coef_ridge = pd.DataFrame({'Variable': data.columns[1:],
 print("Ridge Coefficients: \n", coef_ridge)
 
 #### Define Lasso model
-grid['alpha'] = np.arange(0.01, 1, 0.001)
+grid['alpha'] = np.arange(0.002, 0.3, 0.001)
 search_lasso = GridSearchCV(Lasso(), grid, scoring='neg_mean_absolute_error',
-                            cv=btscv, n_jobs=-1)
+                            cv=btscv, n_jobs=-1, return_train_score=True)
 search_lasso.fit(X_train, y_train)
 print("Lasso lambda: \n", search_lasso.best_params_['alpha'])
+
+# Graph with hyperparameter estimates
+lambda_lasso_scores = search_lasso.cv_results_['mean_test_score']
+plt.plot(grid['alpha'], lambda_lasso_scores, label='Lasso Cross-Validation')
+plt.xlabel('Alpha')
+plt.ylabel('Score')
+plt.legend()
+plt.show()
 
 # Define Lasso model with hyper parameter
 model_lasso = Lasso(alpha=search_lasso.best_params_['alpha'])
@@ -148,11 +164,19 @@ coef_lasso = pd.DataFrame({'Variable': data.columns[1:],
 print("Lasso Coefficients: \n", coef_lasso)
 
 #### Define Elastic Net model
-grid['alpha'] = np.arange(0.01, 1, 0.001)
+grid['alpha'] = np.arange(0.002, 0.3, 0.001)
 search_elastic = GridSearchCV(ElasticNet(), grid, scoring='neg_mean_absolute_error',
-                              cv=btscv, n_jobs=-1)
+                              cv=btscv, n_jobs=-1, return_train_score=True)
 search_elastic.fit(X_train, y_train)
 print("Elastic Net lambda: \n", search_elastic.best_params_['alpha'])
+
+# Graph with hyperparameter estimates
+lambda_elastic_scores = search_elastic.cv_results_['mean_test_score']
+plt.plot(grid['alpha'], lambda_elastic_scores, label='Elastic Net Cross-Validation')
+plt.xlabel('Alpha')
+plt.ylabel('Score')
+plt.legend()
+plt.show()
 
 # Define Elastic Net model with hyper parameter
 model_elastic = ElasticNet(alpha=search_elastic.best_params_['alpha'])
@@ -244,9 +268,6 @@ my_file = "y_pred_rolling_LCPS.txt"
 with open(my_file, 'r') as f:
     yhat_lcps_oneday = eval(f.read())
 
-# take log of yhat to scale to the same as the other predictions
-yhat_lcps_oneday = np.log(yhat_lcps_oneday)
-
 ### Performance of predictions
 
 # Performance of train fit
@@ -258,6 +279,7 @@ perf_train = {'AR(1)':perf_metrics(y_train[6:], y_train[5:(len(y_train)-1)]),
         'Elastic Net': perf_metrics(y_train[6:], model_elastic.predict(X_train)[6:]),
         }
 perf_train = pd.DataFrame(perf_train)
+perf_train = round(perf_train, 2)
 perf_train.index = ['R Squared', 'ME', 'RMSE', 'MAE', 'MAPE', 'WAPE']
 print("Train fit performance: \n", perf_train)
 
@@ -268,12 +290,13 @@ print(perf_train.to_latex())
 perf_test = {'AR(1)':perf_metrics(y_test, yhat_ar1),
         'SMA(3)':perf_metrics(y_test, yhat_sma3),
         'SMA(7)':perf_metrics(y_test, yhat_sma7),
+        'LCPS': perf_metrics(y_test, yhat_lcps_oneday),
         'Ridge': perf_metrics(y_test, yhat_ridge),
         'Lasso': perf_metrics(y_test, yhat_lasso),
         'Elastic Net': perf_metrics(y_test, yhat_elastic),
-#        'LCPS one-day': perf_metrics(y_test, yhat_lcps_oneday)
         }
 perf_test = pd.DataFrame(perf_test)
+perf_test = round(perf_test, 2)
 perf_test.index = ['R Squared', 'ME', 'RMSE', 'MAE', 'MAPE', 'WAPE']
 print("Test fit performance: \n", perf_test)
 
@@ -300,14 +323,24 @@ perf.index = ['R Squared', 'RMSE', 'MAE', 'MAPE', 'WAPE']
 print(perf)
 """
 
-data.index = pd.to_datetime(data.index, format='%Y-%m-%d')
+#data.index = pd.to_datetime(data.index, format='%Y-%m-%d')
 
 # Graph of predictions
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test), label='ICU Admissions')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_sma3), label='SMA(3)')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_sma7), label='SMA(7)')
-#plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lcps_oneday), label='LCPS Model')
-plt.xticks(np.quantile(data.index[int(X.shape[0] * split_pct):], np.linspace(0, 1, 5)))
+plt.xticks(data.index[np.quantile(range(int(X.shape[0] * split_pct),len(data)), np.linspace(0, 1, 5)).astype(int)])
+plt.yticks(np.linspace(35, 70, 8))
+plt.xlabel('Time')
+plt.ylabel('Admissions')
+plt.legend()
+plt.show()
+
+# Graph of predictions
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test), label='ICU Admissions')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lcps_oneday), label='LCPS Model')
+plt.xticks(data.index[np.quantile(range(int(X.shape[0] * split_pct),len(data)), np.linspace(0, 1, 5)).astype(int)])
+plt.yticks(np.linspace(35, 70, 8))
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
@@ -318,7 +351,8 @@ plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test), label='ICU Ad
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_ridge), label='Ridge Model')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lasso), label='Lasso Model')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_elastic), label='Elastic Net Model')
-plt.xticks(np.quantile(data.index[int(X.shape[0] * split_pct):], np.linspace(0, 1, 5)))
+plt.xticks(data.index[np.quantile(range(int(X.shape[0] * split_pct),len(data)), np.linspace(0, 1, 5)).astype(int)])
+plt.yticks(np.linspace(35, 70, 8))
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 #plt.rc('font', size=10)
@@ -332,7 +366,7 @@ plt.plot(data.index[6:int(X.shape[0] * split_pct)], np.exp(moving_average(y, 3)[
          label='SMA(3) Model')
 plt.plot(data.index[6:int(X.shape[0] * split_pct)], np.exp(moving_average(y, 7)[:(len(y_train)-6)]),
          label='SMA(7) Model')
-plt.xticks(np.quantile(data.index[6:int(X.shape[0] * split_pct)], np.linspace(0, 1, 5)))
+plt.xticks(data.index[np.quantile(range(6,int(X.shape[0] * split_pct)), np.linspace(0, 1, 5)).astype(int)])
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
@@ -347,6 +381,17 @@ plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_lasso.predict(X_
 plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_elastic.predict(X_train)),
          label='Elastic Net Model')
 plt.xticks(np.quantile(data.index[:int(X.shape[0] * split_pct)], np.linspace(0, 1, 5)))
+plt.xlabel('Time')
+plt.ylabel('Admissions')
+plt.legend()
+plt.show()
+
+# Graph of train fit and predictions
+plt.plot(data.index, np.exp(y), label='ICU Admissions')
+plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_elastic.predict(X_train)),
+         label='Elastic Net Train Fit')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_elastic), label='Elastic Net Test Fit')
+plt.xticks(data.index[np.quantile(range(0,len(data)), np.linspace(0, 1, 5)).astype(int)])
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
