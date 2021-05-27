@@ -120,9 +120,11 @@ print("Ridge lambda: \n", search_ridge.best_params_['alpha'])
 
 # Graph with hyperparameter estimates
 lambda_ridge_scores = search_ridge.cv_results_['mean_test_score']
-plt.plot(grid['alpha'], lambda_ridge_scores, label='Ridge Cross-Validation')
+plt.plot(grid['alpha'], lambda_ridge_scores,
+         linewidth=3, label='Ridge Cross-Validation')
 plt.xlabel('Alpha')
 plt.ylabel('Score')
+plt.rcParams.update({'font.size': 10})
 plt.legend()
 plt.show()
 
@@ -146,7 +148,8 @@ print("Lasso lambda: \n", search_lasso.best_params_['alpha'])
 
 # Graph with hyperparameter estimates
 lambda_lasso_scores = search_lasso.cv_results_['mean_test_score']
-plt.plot(grid['alpha'], lambda_lasso_scores, label='Lasso Cross-Validation')
+plt.plot(grid['alpha'], lambda_lasso_scores,
+         linewidth=3, label='Lasso Cross-Validation')
 plt.xlabel('Alpha')
 plt.ylabel('Score')
 plt.legend()
@@ -172,7 +175,10 @@ print("Elastic Net lambda: \n", search_elastic.best_params_['alpha'])
 
 # Graph with hyperparameter estimates
 lambda_elastic_scores = search_elastic.cv_results_['mean_test_score']
-plt.plot(grid['alpha'], lambda_elastic_scores, label='Elastic Net Cross-Validation')
+plt.plot(grid['alpha'], lambda_lasso_scores,
+         linewidth=3, label='Lasso Cross-Validation')
+plt.plot(grid['alpha'], lambda_elastic_scores,
+         linewidth=3, label='Elastic Net Cross-Validation')
 plt.xlabel('Alpha')
 plt.ylabel('Score')
 plt.legend()
@@ -300,6 +306,9 @@ perf_test = round(perf_test, 2)
 perf_test.index = ['R Squared', 'ME', 'RMSE', 'MAE', 'MAPE', 'WAPE']
 print("Test fit performance: \n", perf_test)
 
+# Variability in prediction errors
+
+
 # Export to latex
 print(perf_test.to_latex())
 
@@ -323,12 +332,14 @@ perf.index = ['R Squared', 'RMSE', 'MAE', 'MAPE', 'WAPE']
 print(perf)
 """
 
-#data.index = pd.to_datetime(data.index, format='%Y-%m-%d')
 
 # Graph of predictions
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test), label='ICU Admissions')
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_sma3), label='SMA(3)')
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_sma7), label='SMA(7)')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test),
+         linewidth=2, label='ICU Admissions')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_sma3),
+         '-.', linewidth=2, label='SMA(3)')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_sma7),
+         '--', linewidth=2, label='SMA(7)')
 plt.xticks(data.index[np.quantile(range(int(X.shape[0] * split_pct),len(data)), np.linspace(0, 1, 5)).astype(int)])
 plt.yticks(np.linspace(35, 70, 8))
 plt.xlabel('Time')
@@ -337,8 +348,10 @@ plt.legend()
 plt.show()
 
 # Graph of predictions
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test), label='ICU Admissions')
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lcps_oneday), label='LCPS Model')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test),
+         linewidth=2, label='ICU Admissions')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lcps_oneday),
+         '--', linewidth=2, label='LCPS Model')
 plt.xticks(data.index[np.quantile(range(int(X.shape[0] * split_pct),len(data)), np.linspace(0, 1, 5)).astype(int)])
 plt.yticks(np.linspace(35, 70, 8))
 plt.xlabel('Time')
@@ -347,10 +360,14 @@ plt.legend()
 plt.show()
 
 # Graph of predictions
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test), label='ICU Admissions')
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_ridge), label='Ridge Model')
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lasso), label='Lasso Model')
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_elastic), label='Elastic Net Model')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test),
+         linewidth=2, label='ICU Admissions')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_ridge),
+         '--', linewidth=2, label='Ridge Model')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lasso),
+         '--', linewidth=2, label='Lasso Model')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_elastic),
+         '--', linewidth=2, label='Elastic Net Model')
 plt.xticks(data.index[np.quantile(range(int(X.shape[0] * split_pct),len(data)), np.linspace(0, 1, 5)).astype(int)])
 plt.yticks(np.linspace(35, 70, 8))
 plt.xlabel('Time')
