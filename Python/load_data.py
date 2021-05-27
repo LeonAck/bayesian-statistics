@@ -208,10 +208,10 @@ master.RNA = master.RNA.shift(7)
 master.RNA_SMA3d = master.RNA_SMA3d.shift(7)
 master.RNA_SMA7d = master.RNA_SMA7d.shift(7)
 
-# Remove all data up to and including 29-10-2020 as SMA variables contain nan
+# Remove all data up to and including 22-10-2020 as SMA variables contain nan
 # This is a temporary solution. We might later decide to exclude these variables
-# to use the observations before 29-10-2020 as well
-master = master.loc['2020-10-30':]
+# to use the observations before 22-10-2020 as well
+master = master.loc['2020-10-23':]
 
 # We downloaded the data on 2021-05-05.
 # We remove all data after 2021-05-02 since many variables are unavailable. This is because we use open source data.
@@ -231,9 +231,9 @@ all_data = master.copy()
 
 # Create subset of all data with relevant variables.
 rel_vars = ['ICU_Inflow', 'ICU_Inflow_SMA3d',
-            'ICU_Inflow_SMA7d', 'ICU_Inflow_SMA14d',
+            'ICU_Inflow_SMA7d',
             'Hosp_Inflow', 'Hosp_Inflow_SMA3d',
-            'Hosp_Inflow_SMA7d', 'Hosp_Inflow_SMA14d',
+            'Hosp_Inflow_SMA7d',
             'Tested', 'Tested_SMA3d', 'Tested_SMA7d',
             'Cases', 'Cases_SMA3d', 'Cases_SMA7d',
             'Cases_Pct', 'Cases_Pct_SMA3d', 'Cases_Pct_SMA7d',
