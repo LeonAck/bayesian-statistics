@@ -18,7 +18,7 @@ import sys
 
 sys.path.append("Python")
 from cross_validation import BlockingTimeSeriesSplit, GridSearchOwn, perf_metrics
-from Models_LCPS import rolling_pred_testset, LCPS
+
 
 # Load data
 master = pd.read_csv("Data/master.csv", index_col=0)  # Regressors not lagged (=unrealistic)
