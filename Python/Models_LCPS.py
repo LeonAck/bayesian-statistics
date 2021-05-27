@@ -10,16 +10,16 @@ sys.path.append("Python")
 from cross_validation import perf_metrics
 
 # load data
-master = pd.read_csv("Data/master.csv")
-master.date = pd.to_datetime(master.date, format='%Y-%m-%d')
-master = master.sort_values(by='date', ascending=True)
+data = pd.read_csv("Data/data.csv")
+data.date = pd.to_datetime(data.date, format='%Y-%m-%d')
+data = data.sort_values(by='date', ascending=True)
 
 # create weekday variable.
 # 0 is Monday, ..., 6 is Sunday
-master['weekday'] = master.date.dt.weekday
+data['weekday'] = data.date.dt.weekday
 
-y = master.ICU_Inflow.values
-w = master.weekday.values
+y = data.ICU_Inflow.values
+w = data.weekday.values
 # Split data set into testing and training set. 80% in training set (arbitrary
 # choice)
 
@@ -146,23 +146,25 @@ def rolling_pred_testset(method, y_train, y_test, w_train, w_test, t=1):
 
     return y_pred
 
-"""
-# y_pred = rolling_pred_testset(LCPS, y_train, y_test, w_train, w_test, t=1)
+
+y_pred = rolling_pred_testset(LCPS, y_train, y_test, w_train, w_test, t=1)
 # y_pred = rolling_pred(LCPS, y=y, w=w, t=1)
 
 filename = 'y_pred_rolling_LCPS.txt'
 with open(filename, 'w') as file_object:
     file_object.write(str(y_pred))
-"""
+
 
 # load LCPS_rolling one-day predictions
 my_file = "y_pred_rolling_LCPS.txt"
 
 with open(my_file, 'r') as f:
     yhat_lcps_oneday = eval(f.read())
-# Graph of predictions
-plt.plot(master.index[int(y.shape[0] * split_pct):], y_test, label='ICU Admissions')
-plt.plot(master.index[int(y.shape[0] * split_pct):], yhat_lcps_oneday, label='Predictions')
+
+
+# Graph of predictions LCPS
+plt.plot(data.index[int(y.shape[0] * split_pct):], y_test, label='ICU Admissions')
+plt.plot(data.index[int(y.shape[0] * split_pct):], yhat_lcps_oneday, label='Predictions')
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
