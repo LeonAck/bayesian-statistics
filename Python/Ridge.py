@@ -261,6 +261,9 @@ perf_train = pd.DataFrame(perf_train)
 perf_train.index = ['R Squared', 'ME', 'RMSE', 'MAE', 'MAPE', 'WAPE']
 print("Train fit performance: \n", perf_train)
 
+# Export to latex
+print(perf_train.to_latex())
+
 # Performance of test predictions
 perf_test = {'AR(1)':perf_metrics(y_test, yhat_ar1),
         'SMA(3)':perf_metrics(y_test, yhat_sma3),
@@ -273,6 +276,9 @@ perf_test = {'AR(1)':perf_metrics(y_test, yhat_ar1),
 perf_test = pd.DataFrame(perf_test)
 perf_test.index = ['R Squared', 'ME', 'RMSE', 'MAE', 'MAPE', 'WAPE']
 print("Test fit performance: \n", perf_test)
+
+# Export to latex
+print(perf_test.to_latex())
 
 """
 # Compare predicted results to y_test for 3 day ahead predictions
@@ -309,10 +315,24 @@ plt.show()
 
 # Graph of predictions
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test), label='ICU Admissions')
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_ridge), label='Ridge')
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lasso), label='Lasso')
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_elastic), label='Elastic Net')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_ridge), label='Ridge Model')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lasso), label='Lasso Model')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_elastic), label='Elastic Net Model')
 plt.xticks(np.quantile(data.index[int(X.shape[0] * split_pct):], np.linspace(0, 1, 5)))
+plt.xlabel('Time')
+plt.ylabel('Admissions')
+#plt.rc('font', size=10)
+plt.legend()
+plt.show()
+
+# Graph of train fit
+plt.plot(data.index[6:int(X.shape[0] * split_pct)], np.exp(y_train)[6:], label='ICU Admissions')
+#plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(yhat_lcps_oneday), label='LCPS Model')
+plt.plot(data.index[6:int(X.shape[0] * split_pct)], np.exp(moving_average(y, 3)[4:(len(y_train)-2)]),
+         label='SMA(3) Model')
+plt.plot(data.index[6:int(X.shape[0] * split_pct)], np.exp(moving_average(y, 7)[:(len(y_train)-6)]),
+         label='SMA(7) Model')
+plt.xticks(np.quantile(data.index[6:int(X.shape[0] * split_pct)], np.linspace(0, 1, 5)))
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
@@ -320,7 +340,6 @@ plt.show()
 
 # Graph of train fit
 plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(y_train), label='ICU Admissions')
-#plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(yhat_lcps_oneday), label='LCPS Model')
 plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_ridge.predict(X_train)),
          label='Ridge Model')
 plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_lasso.predict(X_train)),
@@ -328,24 +347,6 @@ plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_lasso.predict(X_
 plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_elastic.predict(X_train)),
          label='Elastic Net Model')
 plt.xticks(np.quantile(data.index[:int(X.shape[0] * split_pct)], np.linspace(0, 1, 5)))
-plt.xlabel('Time')
-plt.ylabel('Admissions')
-plt.legend()
-plt.show()
-
-
-# Graph of train fit and predictions
-plt.plot(data.index, np.exp(y), label='ICU Admissions')
-#plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(yhat_lcps_oneday), label='LCPS Train Fit')
-plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_ridge.predict(X_train)), label='Ridge Train Fit')
-plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_lasso.predict(X_train)), label='Lasso Train Fit')
-plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_elastic.predict(X_train)),
-         label='Elastic Net Train Fit')
-#plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lcps_oneday), label='LCPS Test Fit')
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_ridge), label='Ridge Test Fit')
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lasso), label='Lasso Test Fit')
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_elastic), label='Elastic Net Test Fit')
-plt.xticks(np.quantile(data.index, np.linspace(0, 1, 5)))
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
