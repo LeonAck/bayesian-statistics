@@ -11,14 +11,12 @@ from sklearn.linear_model import Ridge, Lasso, PoissonRegressor, ElasticNet
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
 
-
 # (Roel) I don't know why but I need to add the code below
 # to be able to import cross_validation
 import sys
-
 sys.path.append("Python")
 from cross_validation import BlockingTimeSeriesSplit, GridSearchOwn, perf_metrics
-from Models_LCPS import rolling_pred_testset, LCPS
+#from Models_LCPS import rolling_pred_testset, LCPS
 
 # Load data
 master = pd.read_csv("Data/master.csv", index_col=0)  # Regressors not lagged (=unrealistic)
@@ -94,7 +92,7 @@ grid['alpha'] = np.arange(0.01, 100, 0.1)
 # This is a way of dividing the training set in different validations set,
 # while considering the dependence between observations
 # Code is found in cross_validation.py
-btscv = BlockingTimeSeriesSplit(n_splits=3)
+btscv = BlockingTimeSeriesSplit(n_splits=4)
 
 ### Compare Grid Searches
 
@@ -114,7 +112,7 @@ print("Lambda from sklearn grid search:", lambda_sklearn) #Note the two lambdas 
 
 
 #### Define Ridge model
-grid['alpha'] = np.arange(0.01, 50, 0.01)
+grid['alpha'] = np.arange(0.01, 100, 0.01)
 search_ridge = GridSearchCV(Ridge(), grid, scoring='neg_mean_absolute_error',
                             cv=btscv, n_jobs=-1)
 search_ridge.fit(X_train, y_train)
@@ -270,7 +268,7 @@ perf_test = {'AR(1)':perf_metrics(y_test, yhat_ar1),
         'Ridge': perf_metrics(y_test, yhat_ridge),
         'Lasso': perf_metrics(y_test, yhat_lasso),
         'Elastic Net': perf_metrics(y_test, yhat_elastic),
-        'LCPS one-day': perf_metrics(y_test, yhat_lcps_oneday)
+#        'LCPS one-day': perf_metrics(y_test, yhat_lcps_oneday)
         }
 perf_test = pd.DataFrame(perf_test)
 perf_test.index = ['R Squared', 'ME', 'RMSE', 'MAE', 'MAPE', 'WAPE']
@@ -296,10 +294,14 @@ perf.index = ['R Squared', 'RMSE', 'MAE', 'MAPE', 'WAPE']
 print(perf)
 """
 
+data.index = pd.to_datetime(data.index, format='%Y-%m-%d')
+
 # Graph of predictions
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test), label='ICU Admissions')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_sma3), label='SMA(3)')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_sma7), label='SMA(7)')
+#plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lcps_oneday), label='LCPS Model')
+plt.xticks(np.quantile(data.index[int(X.shape[0] * split_pct):], np.linspace(0, 1, 5)))
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
@@ -310,20 +312,40 @@ plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test), label='ICU Ad
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_ridge), label='Ridge')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lasso), label='Lasso')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_elastic), label='Elastic Net')
+plt.xticks(np.quantile(data.index[int(X.shape[0] * split_pct):], np.linspace(0, 1, 5)))
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
 plt.show()
 
+# Graph of train fit
+plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(y_train), label='ICU Admissions')
+#plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(yhat_lcps_oneday), label='LCPS Model')
+plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_ridge.predict(X_train)),
+         label='Ridge Model')
+plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_lasso.predict(X_train)),
+         label='Lasso Model')
+plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_elastic.predict(X_train)),
+         label='Elastic Net Model')
+plt.xticks(np.quantile(data.index[:int(X.shape[0] * split_pct)], np.linspace(0, 1, 5)))
+plt.xlabel('Time')
+plt.ylabel('Admissions')
+plt.legend()
+plt.show()
+
+
 # Graph of train fit and predictions
 plt.plot(data.index, np.exp(y), label='ICU Admissions')
+#plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(yhat_lcps_oneday), label='LCPS Train Fit')
 plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_ridge.predict(X_train)), label='Ridge Train Fit')
 plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_lasso.predict(X_train)), label='Lasso Train Fit')
 plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_elastic.predict(X_train)),
          label='Elastic Net Train Fit')
+#plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lcps_oneday), label='LCPS Test Fit')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_ridge), label='Ridge Test Fit')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lasso), label='Lasso Test Fit')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_elastic), label='Elastic Net Test Fit')
+plt.xticks(np.quantile(data.index, np.linspace(0, 1, 5)))
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
