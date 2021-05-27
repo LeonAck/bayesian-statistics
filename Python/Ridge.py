@@ -11,18 +11,18 @@ from sklearn.linear_model import Ridge, Lasso, PoissonRegressor, ElasticNet
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
 
+
 # (Roel) I don't know why but I need to add the code below
 # to be able to import cross_validation
 import sys
+
 sys.path.append("Python")
 from cross_validation import BlockingTimeSeriesSplit, GridSearchOwn, perf_metrics
-
+from Models_LCPS import rolling_pred_testset, LCPS
 
 # Load data
-master = pd.read_csv("Data/master.csv", index_col=0) #Regressors not lagged (=unrealistic)
-data = pd.read_csv("Data/data.csv", index_col=0) #Regressors lagged 1 timeperiod
-
-
+master = pd.read_csv("Data/master.csv", index_col=0)  # Regressors not lagged (=unrealistic)
+data = pd.read_csv("Data/data.csv", index_col=0)  # Regressors lagged 1 timeperiod
 
 ##### Create y, X and train/test split ################
 
@@ -34,6 +34,9 @@ X = np.delete(data.values, 0, axis=1)
 # Keep ICU column for y
 y = data.values[:, 0]
 
+# save weekdays for models michiel
+
+
 # We standardize the data, since this is required for the Ridge model.
 # Create object of StandardScaler class
 scaler = StandardScaler()
@@ -44,11 +47,11 @@ X = scaler.fit_transform(X)
 # Split data set into testing and training set. 80% in training set (arbitrary
 # choice)
 split_pct = 0.8
-split_date = data.index[int(X.shape[0]*split_pct)]
-X_train = X[:int(X.shape[0]*split_pct)]
-X_test = X[int(X.shape[0]*split_pct):]
-y_train = y[:int(X.shape[0]*split_pct)]
-y_test = y[int(X.shape[0]*split_pct):]
+split_date = data.index[int(X.shape[0] * split_pct)]
+X_train = X[:int(X.shape[0] * split_pct)]
+X_test = X[int(X.shape[0] * split_pct):]
+y_train = y[:int(X.shape[0] * split_pct)]
+y_test = y[int(X.shape[0] * split_pct):]
 n_train = len(y_train)
 n_test = len(y_test)
 
@@ -57,7 +60,6 @@ X_train.mean(axis=0)
 X_test.mean(axis=0)
 X_train.std(axis=0)
 X_test.std(axis=0)
-
 
 """ Some Graphs
 # Graph of ICU Inflow
@@ -82,7 +84,6 @@ plt.legend()
 plt.show()
 """
 
-
 #####################  Create model #######################
 
 # Define grid for hyperparameter search
@@ -94,7 +95,6 @@ grid['alpha'] = np.arange(0.01, 100, 0.1)
 # while considering the dependence between observations
 # Code is found in cross_validation.py
 btscv = BlockingTimeSeriesSplit(n_splits=3)
-
 
 ### Compare Grid Searches
 
@@ -131,7 +131,6 @@ coef_ridge = pd.DataFrame({'Variable': data.columns[1:],
         'Coefficient': model_ridge.coef_})
 print("Ridge Coefficients: \n", coef_ridge)
 
-
 #### Define Lasso model
 grid['alpha'] = np.arange(0.01, 1, 0.001)
 search_lasso = GridSearchCV(Lasso(), grid, scoring='neg_mean_absolute_error',
@@ -150,11 +149,10 @@ coef_lasso = pd.DataFrame({'Variable': data.columns[1:],
         'Coefficient': model_lasso.coef_})
 print("Lasso Coefficients: \n", coef_lasso)
 
-
 #### Define Elastic Net model
 grid['alpha'] = np.arange(0.01, 1, 0.001)
 search_elastic = GridSearchCV(ElasticNet(), grid, scoring='neg_mean_absolute_error',
-                            cv=btscv, n_jobs=-1)
+                              cv=btscv, n_jobs=-1)
 search_elastic.fit(X_train, y_train)
 print("Elastic Net lambda: \n", search_elastic.best_params_['alpha'])
 
@@ -176,14 +174,14 @@ print("Elastic Net Coefficients: \n", coef_elastic)
 def moving_average(x, w):
     return np.convolve(x, np.ones(w), 'valid') / w
 
+
 # Predict y values 1 day ahead using the test set
-yhat_ar1 = y[(int(X.shape[0]*split_pct)-1):(len(y)-1)]
-yhat_sma3 = moving_average(y, 3)[(n_train - 3):(len(moving_average(y, 3))-1)]
-yhat_sma7 = moving_average(y, 7)[(n_train- 7):(len(moving_average(y, 7))-1)]
+yhat_ar1 = y[(int(X.shape[0] * split_pct) - 1):(len(y) - 1)]
+yhat_sma3 = moving_average(y, 3)[(n_train - 3):(len(moving_average(y, 3)) - 1)]
+yhat_sma7 = moving_average(y, 7)[(n_train - 7):(len(moving_average(y, 7)) - 1)]
 yhat_ridge = model_ridge.predict(X_test)
 yhat_lasso = model_lasso.predict(X_test)
 yhat_elastic = model_elastic.predict(X_test)
-
 
 """
 # Predict y values 3 days ahead
@@ -242,6 +240,15 @@ for t in range(len(yhat7_ar1)):
     yhat7_sma7[t] = moving_average([sma_at5[0], sma_at4[0], sma_at3[0], sma_at2[0], sma_at1[0], sma_at[0], at], 7)[0]
 """
 
+# load LCPS_rolling one-day predictions
+my_file = "y_pred_rolling_LCPS.txt"
+
+with open(my_file, 'r') as f:
+    yhat_lcps_oneday = eval(f.read())
+
+# take log of yhat to scale to the same as the other predictions
+yhat_lcps_oneday = np.log(yhat_lcps_oneday)
+
 ### Performance of predictions
 
 # Performance of train fit
@@ -263,6 +270,7 @@ perf_test = {'AR(1)':perf_metrics(y_test, yhat_ar1),
         'Ridge': perf_metrics(y_test, yhat_ridge),
         'Lasso': perf_metrics(y_test, yhat_lasso),
         'Elastic Net': perf_metrics(y_test, yhat_elastic),
+        'LCPS one-day': perf_metrics(y_test, yhat_lcps_oneday)
         }
 perf_test = pd.DataFrame(perf_test)
 perf_test.index = ['R Squared', 'ME', 'RMSE', 'MAE', 'MAPE', 'WAPE']
@@ -288,21 +296,20 @@ perf.index = ['R Squared', 'RMSE', 'MAE', 'MAPE', 'WAPE']
 print(perf)
 """
 
-
 # Graph of predictions
-plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(y_test), label='ICU Admissions')
-plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_sma3), label='SMA(3)')
-plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_sma7), label='SMA(7)')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test), label='ICU Admissions')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_sma3), label='SMA(3)')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_sma7), label='SMA(7)')
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
 plt.show()
 
 # Graph of predictions
-plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(y_test), label='ICU Admissions')
-plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_ridge), label='Ridge')
-plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_lasso), label='Lasso')
-plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_elastic), label='Elastic Net')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test), label='ICU Admissions')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_ridge), label='Ridge')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lasso), label='Lasso')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_elastic), label='Elastic Net')
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
@@ -310,12 +317,13 @@ plt.show()
 
 # Graph of train fit and predictions
 plt.plot(data.index, np.exp(y), label='ICU Admissions')
-plt.plot(data.index[:int(X.shape[0]*split_pct)], np.exp(model_ridge.predict(X_train)), label='Ridge Train Fit')
-plt.plot(data.index[:int(X.shape[0]*split_pct)], np.exp(model_lasso.predict(X_train)), label='Lasso Train Fit')
-plt.plot(data.index[:int(X.shape[0]*split_pct)], np.exp(model_elastic.predict(X_train)), label='Elastic Net Train Fit')
-plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_ridge), label='Ridge Test Fit')
-plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_lasso), label='Lasso Test Fit')
-plt.plot(data.index[int(X.shape[0]*split_pct):], np.exp(yhat_elastic), label='Elastic Net Test Fit')
+plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_ridge.predict(X_train)), label='Ridge Train Fit')
+plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_lasso.predict(X_train)), label='Lasso Train Fit')
+plt.plot(data.index[:int(X.shape[0] * split_pct)], np.exp(model_elastic.predict(X_train)),
+         label='Elastic Net Train Fit')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_ridge), label='Ridge Test Fit')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lasso), label='Lasso Test Fit')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_elastic), label='Elastic Net Test Fit')
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
