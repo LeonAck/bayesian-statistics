@@ -140,7 +140,7 @@ coef_ridge = pd.DataFrame({'Variable': data.columns[1:],
 print("Ridge Coefficients: \n", coef_ridge)
 
 #### Define Lasso model
-grid['alpha'] = np.arange(0.002, 0.3, 0.001)
+grid['alpha'] = np.arange(0.002, 0.015, 0.001)
 search_lasso = GridSearchCV(Lasso(), grid, scoring='neg_mean_absolute_error',
                             cv=btscv, n_jobs=-1, return_train_score=True)
 search_lasso.fit(X_train, y_train)
@@ -167,7 +167,7 @@ coef_lasso = pd.DataFrame({'Variable': data.columns[1:],
 print("Lasso Coefficients: \n", coef_lasso)
 
 #### Define Elastic Net model
-grid['alpha'] = np.arange(0.002, 0.3, 0.001)
+grid['alpha'] = np.arange(0.002, 0.015, 0.001)
 search_elastic = GridSearchCV(ElasticNet(), grid, scoring='neg_mean_absolute_error',
                               cv=btscv, n_jobs=-1, return_train_score=True)
 search_elastic.fit(X_train, y_train)
@@ -195,6 +195,11 @@ coef_elastic = pd.DataFrame({'Variable': data.columns[1:],
         'Coefficient': model_elastic.coef_})
 print("Elastic Net Coefficients: \n", coef_elastic)
 
+# All coefficients
+coef = np.insert(np.array(coef_ridge), 2, coef_lasso['Coefficient'], 1)
+coef = np.insert(np.array(coef), 3, coef_elastic['Coefficient'], 1)
+coef = pd.DataFrame(coef)
+coef
 
 ### Predictions
 
@@ -335,11 +340,11 @@ print(perf)
 
 # Graph of predictions
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test),
-         linewidth=2, label='ICU Admissions')
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_sma3),
-         '-.', linewidth=2, label='SMA(3)')
+         'k--', linewidth=2, label='ICU Admissions')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lcps_oneday),
+         '-', linewidth=3, label='LCPS Model')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_sma7),
-         '--', linewidth=2, label='SMA(7)')
+         '-', linewidth=3, label='SMA(7)')
 plt.xticks(data.index[np.quantile(range(int(X.shape[0] * split_pct),len(data)), np.linspace(0, 1, 5)).astype(int)])
 plt.yticks(np.linspace(35, 70, 8))
 plt.xlabel('Time')
@@ -361,13 +366,13 @@ plt.show()
 
 # Graph of predictions
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test),
-         linewidth=2, label='ICU Admissions')
+         'k--', linewidth=2, label='ICU Admissions')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_ridge),
-         '--', linewidth=2, label='Ridge Model')
+         '-', linewidth=3, label='Ridge Model')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lasso),
-         '--', linewidth=2, label='Lasso Model')
+         '-', linewidth=3, label='Lasso Model')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_elastic),
-         '--', linewidth=2, label='Elastic Net Model')
+         '-', linewidth=3, label='Elastic Net Model')
 plt.xticks(data.index[np.quantile(range(int(X.shape[0] * split_pct),len(data)), np.linspace(0, 1, 5)).astype(int)])
 plt.yticks(np.linspace(35, 70, 8))
 plt.xlabel('Time')
