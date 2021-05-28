@@ -148,7 +148,7 @@ def rolling_pred_testset(method, y_train, y_test, w_train, w_test, t=1):
 
 
 y_pred = rolling_pred_testset(LCPS, y_train, y_test, w_train, w_test, t=1)
-# y_pred = rolling_pred(LCPS, y=y, w=w, t=1)
+
 
 filename = 'y_pred_rolling_LCPS.txt'
 with open(filename, 'w') as file_object:
