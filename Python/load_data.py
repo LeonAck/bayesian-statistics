@@ -211,7 +211,7 @@ master.RNA_SMA7d = master.RNA_SMA7d.shift(7)
 # Remove all data up to and including 22-10-2020 as SMA variables contain nan
 # This is a temporary solution. We might later decide to exclude these variables
 # to use the observations before 22-10-2020 as well
-master = master.loc['2020-10-23':]
+master = master.loc['2020-10-24':]
 
 # We downloaded the data on 2021-05-05.
 # We remove all data after 2021-05-02 since many variables are unavailable. This is because we use open source data.
