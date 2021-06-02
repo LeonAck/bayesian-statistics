@@ -4,10 +4,11 @@ import pandas as pd
 import cvxpy as cp
 import matplotlib.pyplot as plt
 
+
 import sys
 
 sys.path.append("Python")
-from cross_validation import perf_metrics
+from cross_validation import perf_metrics, BlockingTimeSeriesSplitLCPS
 
 # load data
 data = pd.read_csv("Data/data.csv")
@@ -23,13 +24,15 @@ w = data.weekday.values
 # Split data set into testing and training set. 80% in training set (arbitrary
 # choice)
 
-# dit omdraaien bij nieuwe load_data
 split_pct = 0.8
+
 y_train = y[:int(y.shape[0] * split_pct)]
 y_test = y[int(y.shape[0] * split_pct):]
 w_train = w[:int(y.shape[0] * split_pct)]
 w_test = w[int(y.shape[0] * split_pct):]
 
+btscv = BlockingTimeSeriesSplitLCPS(n_splits=5)
+print(btscv.return_split(y_train))
 
 class LCPS:
     """
@@ -38,7 +41,7 @@ class LCPS:
 
     """
 
-    def __init__(self, y, w=None, gamma=10):
+    def __init__(self, y, w, gamma=10):
         self.y = y
         self.gamma = gamma
         self.w = w
@@ -79,7 +82,8 @@ class LCPS:
         self.s = np.array(s.value)
 
 
-def test(method):
+def test(method, y_train, y_test, w_train, w_test):
+    # create train test split
     algo = method(y_train, w_train, gamma=10)
     algo.solve()
     print("s", algo.s)
@@ -96,12 +100,12 @@ def test(method):
 
 # test(LCPS)
 
-
+"""
 def rolling_pred(method, y, w, t):
-    """
+    """"""
     Rolling predctions for model. Uses data up to one day To predict t-day
     prediction. Then moves up one day to and predicts t-day from that day
-    """
+    """"""
     y_pred = []
 
     for i in range(6, len(y) - 7):
@@ -114,9 +118,10 @@ def rolling_pred(method, y, w, t):
         y_pred.append(algo.predict(algo.x, algo.s, w_train, t=t))
     print(y_pred)
     return y_pred
+"""
 
 
-def rolling_pred_testset(method, y_train, y_test, w_train, w_test, t=1):
+def rolling_pred_testset(method, y_train, y_test, w_train, w_test, t=1, gamma=10):
     """
     Function to perform a rolling prediction for values in the test set.
     Model is first estimated on training set, but data points from the test
@@ -136,7 +141,7 @@ def rolling_pred_testset(method, y_train, y_test, w_train, w_test, t=1):
             w_train = np.append(w_train, w_test[i - 1])
 
         # we create a model based on the training and test set
-        algo = method(y_train, w_train, gamma=10)
+        algo = method(y_train, w_train, gamma=gamma)
 
         # solve the model
         algo.solve()
@@ -147,13 +152,21 @@ def rolling_pred_testset(method, y_train, y_test, w_train, w_test, t=1):
     return y_pred
 
 
+def gridsearch_lcps(grid, y_train, y_test, w_train, w_test, t=1):
+    """
+    Find the optimal value for the smoothing parameter lambda.
+    """
+    # create train test split
+
+    return None
+"""
 y_pred = rolling_pred_testset(LCPS, y_train, y_test, w_train, w_test, t=1)
 
 
 filename = 'y_pred_rolling_LCPS.txt'
 with open(filename, 'w') as file_object:
     file_object.write(str(y_pred))
-
+"""
 
 # load LCPS_rolling one-day predictions
 my_file = "y_pred_rolling_LCPS.txt"
