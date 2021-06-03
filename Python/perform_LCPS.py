@@ -5,7 +5,7 @@ import sys
 
 sys.path.append("Python")
 from cross_validation import BlockingTimeSeriesSplitLCPS
-from Models_LCPS import gridsearch_lcps, rolling_pred_testset
+from Models_LCPS import gridsearch_lcps, rolling_pred_testset, LCPS
 
 # load data
 data = pd.read_csv("Data/data.csv")
@@ -38,7 +38,7 @@ splits_list = btscv.return_split(y_train)
 # define the grid
 grid = np.arange(0, 101, 0.5)
 
-
+"""
 opt_lambda, average_mae_per_par = gridsearch_lcps(y, w, splits_list, grid=grid)
 print(opt_lambda)
 
@@ -47,7 +47,8 @@ with open(filename, 'w') as file_object:
     file_object.write(str(opt_lambda))
     file_object.write(str(average_mae_per_par))
 
-"""
+
+
 y_pred = rolling_pred_testset(LCPS, y_train, y_test, w_train, w_test, t=1)
 
 
@@ -55,6 +56,22 @@ filename = 'y_pred_rolling_LCPS.txt'
 with open(filename, 'w') as file_object:
     file_object.write(str(y_pred))
 """
+
+lambda_file = "opt_lambda_LCPS.txt"
+
+# load file with optimal lambda and mae's per lambda
+with open(lambda_file, 'r') as f:
+    average_mae_per_par = eval(f.read().lstrip("6.0"))
+
+
+# plot graph of mae per value for lambda
+plt.plot(grid, average_mae_per_par.values(),  label='MAE')
+plt.xlabel('Lambda')
+plt.ylabel('MAE')
+axes = plt.gca()
+axes.set_xlim([0, 20])
+plt.legend()
+plt.show()
 
 # load LCPS_rolling one-day predictions
 my_file = "y_pred_rolling_LCPS.txt"
