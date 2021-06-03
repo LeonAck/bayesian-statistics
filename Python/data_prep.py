@@ -26,13 +26,16 @@ rel_vars = ['ICU_Inflow', 'ICU_Inflow_SMA3d', 'ICU_Inflow_SMA7d',
             'Monday', 'Tuesday', 'Wednesday',
             'Thursday', 'Friday', 'Saturday']
 """
-rel_vars = ['ICU_Inflow', 'Hosp_Inflow',
+rel_vars = ['ICU_Inflow',
+            'Hosp_Inflow',
             'Tested', 'Cases', 'Cases_Pct',
-            'RNA', 'Vacc_Est',
+            'RNA',
+            'Vacc_Est',
             'Monday', 'Tuesday', 'Wednesday',
             'Thursday', 'Friday', 'Saturday']
 data = master.copy()
 data = data[rel_vars]
+
 
 # Take head of dataframe to Latex before making changes
 vars_for_table = ['ICU_Inflow', 'Hosp_Inflow',
@@ -41,6 +44,7 @@ vars_for_table = ['ICU_Inflow', 'Hosp_Inflow',
 data_for_latex = data.loc['2021-01-05':'2021-01-09']
 print(data_for_latex.to_latex(columns=vars_for_table, index=True, label="data_head",
                     caption="Sample of Data", position="h!"))
+
 
 # Take logarithm of variables except for the following
 vars_excl = ['Monday', 'Tuesday', 'Wednesday',
