@@ -1,44 +1,20 @@
 """File to copy the LCPS ICU admission programme"""
-import numpy as np
-import pandas as pd
 import cvxpy as cp
-import matplotlib.pyplot as plt
-
+import numpy as np
 import sys
+from sklearn.metrics import mean_absolute_error
 
 sys.path.append("Python")
 from cross_validation import perf_metrics
-
-# load data
-data = pd.read_csv("Data/data.csv")
-data.date = pd.to_datetime(data.date, format='%Y-%m-%d')
-data = data.sort_values(by='date', ascending=True)
-
-# create weekday variable.
-# 0 is Monday, ..., 6 is Sunday
-data['weekday'] = data.date.dt.weekday
-
-y = data.ICU_Inflow.values
-w = data.weekday.values
-# Split data set into testing and training set. 80% in training set (arbitrary
-# choice)
-
-# dit omdraaien bij nieuwe load_data
-split_pct = 0.8
-y_train = y[:int(y.shape[0] * split_pct)]
-y_test = y[int(y.shape[0] * split_pct):]
-w_train = w[:int(y.shape[0] * split_pct)]
-w_test = w[int(y.shape[0] * split_pct):]
 
 
 class LCPS:
     """
     Class to recreate LCPS model
     Minimization with trend penalty term
-
     """
 
-    def __init__(self, y, w=None, gamma=10):
+    def __init__(self, y, w, gamma=10):
         self.y = y
         self.gamma = gamma
         self.w = w
@@ -79,7 +55,8 @@ class LCPS:
         self.s = np.array(s.value)
 
 
-def test(method):
+def test(method, y_train, y_test, w_train, w_test):
+    # create train test split
     algo = method(y_train, w_train, gamma=10)
     algo.solve()
     print("s", algo.s)
@@ -96,12 +73,12 @@ def test(method):
 
 # test(LCPS)
 
-
+"""
 def rolling_pred(method, y, w, t):
-    """
+    """"""
     Rolling predctions for model. Uses data up to one day To predict t-day
     prediction. Then moves up one day to and predicts t-day from that day
-    """
+    """"""
     y_pred = []
 
     for i in range(6, len(y) - 7):
@@ -114,9 +91,10 @@ def rolling_pred(method, y, w, t):
         y_pred.append(algo.predict(algo.x, algo.s, w_train, t=t))
     print(y_pred)
     return y_pred
+"""
 
 
-def rolling_pred_testset(method, y_train, y_test, w_train, w_test, t=1):
+def rolling_pred_testset(method, y_train, y_test, w_train, w_test, t=1, gamma=10):
     """
     Function to perform a rolling prediction for values in the test set.
     Model is first estimated on training set, but data points from the test
@@ -136,7 +114,7 @@ def rolling_pred_testset(method, y_train, y_test, w_train, w_test, t=1):
             w_train = np.append(w_train, w_test[i - 1])
 
         # we create a model based on the training and test set
-        algo = method(y_train, w_train, gamma=10)
+        algo = method(y_train, w_train, gamma=gamma)
 
         # solve the model
         algo.solve()
@@ -147,25 +125,46 @@ def rolling_pred_testset(method, y_train, y_test, w_train, w_test, t=1):
     return y_pred
 
 
-y_pred = rolling_pred_testset(LCPS, y_train, y_test, w_train, w_test, t=1)
-# y_pred = rolling_pred(LCPS, y=y, w=w, t=1)
+def gridsearch_lcps(y, w, splits_list, grid=None, t=1):
+    """
+    Find the optimal value for the smoothing parameter lambda by a block-
+    time series split. We optimzie based on the mean absolute error of rolling
+    predictions
 
-filename = 'y_pred_rolling_LCPS.txt'
-with open(filename, 'w') as file_object:
-    file_object.write(str(y_pred))
+    :return:
+    optimal value of lambda
+    """
+    # repeat loop for every parameter in grid
+    average_mae_per_par = dict()
+    for parameter in grid:
 
+        mae_list = []
 
-# load LCPS_rolling one-day predictions
-my_file = "y_pred_rolling_LCPS.txt"
+        # for loop for each set of indices per fold
+        for index_dict in splits_list:
+            # perform rolling predictions using train set on the validation set
+            y_pred = rolling_pred_testset(LCPS,
+                                          y[index_dict["train"][0]:
+                                            index_dict["train"][1]],
+                                          y[index_dict["validation"][0]:
+                                            index_dict["validation"][1]],
+                                          w[index_dict["train"][0]:
+                                            index_dict["train"][1]],
+                                          w[index_dict["validation"][0]:
+                                            index_dict["validation"][1]],
+                                          t=t, gamma=parameter)
 
-with open(my_file, 'r') as f:
-    yhat_lcps_oneday = eval(f.read())
+            # add the mean absolute error on validation set to the list
+            mae_list.append(mean_absolute_error(
+                np.exp(y[
+                       index_dict["validation"][0]:
+                       index_dict["validation"][1]]),
+                np.exp(y_pred)))
+        print("mae-list", mae_list)
+        # add average mae for parameter to dict
+        average_mae_per_par["{}".format(parameter)] = np.mean(mae_list)
 
-
-# Graph of predictions LCPS
-plt.plot(data.index[int(y.shape[0] * split_pct):], y_test, label='ICU Admissions')
-plt.plot(data.index[int(y.shape[0] * split_pct):], yhat_lcps_oneday, label='Predictions')
-plt.xlabel('Time')
-plt.ylabel('Admissions')
-plt.legend()
-plt.show()
+    # return parameter with average mae
+    print(average_mae_per_par)
+    return min(average_mae_per_par, key=average_mae_per_par.get), \
+           average_mae_per_par

@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import datetime as dt
 import pandas as pd
 import numpy as np
-import copy
+import csaps
 import seaborn as sns
 from scipy.interpolate import UnivariateSpline
 
@@ -24,22 +24,50 @@ for column in data.columns:
 data.date = pd.to_datetime(data.date, format='%Y-%m-%d')
 data.date = pd.to_datetime(data.date, format='%Y-%m-%d')
 
-# Describe the data
-data[['ICU_Inflow', 'RNA', 'Hosp_Inflow', 'Cases', 'Vacc_Est']].describe()
+# get 7 day SMA for cases
 
-# sort data frame
-# data = data.sort_values(by='date', ascending=True)
-# data_no_diff = copy.deepcopy(data)
-# data_no_diff.sort_vlaues(by='date', ascending=True)
-# take first difference of data except for date column
-# for column in data.columns[1:]:
- #   data[column] = data[column].diff()
+# Describe the data
+print(data[['ICU_Inflow', 'RNA', 'Hosp_Inflow', 'Cases', 'Vacc_Est']].describe())
+
+
+# graph 2 data exploration
+plt.plot(data.date, data.ICU_Inflow_SMA7d, label='ICU Admissions', linewidth=3)
+plt.plot(data.date, data.Cases_SMA7d/125, '--', label='Positive Cases / 125 ')
+plt.plot(data.date, data.Cases_Pct_SMA7d*2.5, label='Percentage of positive cases * 2.5')
+plt.plot(data.date, data.Tested_SMA7d/1000, '--', label='Tests/ 1,000')
+plt.xlabel('Date')
+plt.ylabel('Value')
+axes = plt.gca()
+axes.set_ylim([0, 100])
+plt.legend()
+plt.savefig("Images/Data_exploration_2.png")
+plt.show()
+
+# graph 1 data exploration
+plt.plot(data.date, data.ICU_Inflow_SMA7d, label='ICU Admissions', linewidth=3)
+plt.plot(data.date, data.Hosp_Inflow_SMA7d/5, '--', label='Hospital Admissions / 5')
+plt.plot(data.date, data.RNA_SMA7d/1000000000000, '--', label='RNA per Measuring Station / 10^12')
+plt.xlabel('Date')
+plt.ylabel('Value')
+axes = plt.gca()
+axes.set_ylim([0, 100])
+plt.legend()
+plt.savefig("Images/Data_exploration_1.png")
+plt.show()
 
 # compare cases to ICU inflow
 plt.plot(data.date, data.ICU_Inflow, label='ICU Admissions')
-plt.plot(data.date, data.Cases/100, label='positive cases')
+plt.plot(data.date, data.Cases/125, label='positive cases')
 plt.xlabel('Date')
 plt.ylabel('Cases')
+plt.legend()
+plt.show()
+
+# graph over shorter time period
+plt.plot(data.date.loc[129:], data.ICU_Inflow.loc[129:], label='ICU Admissions')
+plt.plot(data.date.loc[129:], data.Cases.loc[129:]/100, '-.', label='Cases')
+plt.xlabel('Date')
+plt.ylabel('number')
 plt.legend()
 plt.show()
 
@@ -59,6 +87,23 @@ plt.ylabel('number')
 plt.legend()
 plt.show()
 
+# compare # tests to ICU inflow
+plt.plot(data.date, data.ICU_Inflow_SMA7d, label='ICU Admissions')
+plt.plot(data.date, data.Tested_SMA7d/1000, label='Tests')
+plt.xlabel('Date')
+plt.ylabel('number')
+plt.legend()
+plt.show()
+
+# graph over shorter time period
+plt.plot(data.date.loc[129:], data.ICU_Inflow.loc[129:]*5, label='ICU Admissions')
+plt.plot(data.date.loc[129:], data.Hosp_Inflow.loc[129:], '-.', label='Hospital admissions')
+plt.xlabel('Date')
+plt.ylabel('number')
+plt.legend()
+plt.show()
+
+"""
 # compare vacc to ICU inflow
 plt.plot(data.date, np.log(data.ICU_Inflow_SMA7d)*4, label='ICU Admissions')
 plt.plot(data.date, np.pad(data.Vacc_Est, (0, 1), 'constant'), label='estimated vaccinations')
@@ -66,7 +111,7 @@ plt.xlabel('Date')
 plt.ylabel('number')
 plt.legend()
 plt.show()
-
+"""
 # compare RNA to ICU inflow
 plt.plot(data.date, data.ICU_Inflow_SMA7d, label='ICU Admissions')
 plt.plot(data.date, data.RNA_SMA7d/1000000000000, label='RNA')
@@ -82,7 +127,6 @@ plt.show()
 # Graph of ICU Intake
 plt.plot(data.date, data.ICU_Inflow, label='ICU Admissions')
 plt.plot(data.date, data.ICU_Inflow_SMA7d, 'r--', label='Moving Average 7 Days')
-plt.plot(data.date, data.ICU_Inflow_SMA14d, 'k-.', label='Moving Average 14 Days')
 plt.xlabel('Date')
 plt.ylabel('Admissions')
 plt.legend()
@@ -91,7 +135,7 @@ plt.show()
 # Graph of Hospital Intake
 plt.plot(data.date, data.Hosp_Inflow, label='Hospital Admissions')
 plt.plot(data.date, data.Hosp_Inflow_SMA7d, 'r--', label='Moving Average 7 Days')
-plt.plot(data.date, data.Hosp_Inflow_SMA14d, 'k-.', label='Moving Average 14 Days')
+# plt.plot(data.date, data.Hosp_Inflow_SMA14d, 'k-.', label='Moving Average 14 Days')
 plt.xlabel('Date')
 plt.ylabel('Admissions')
 plt.legend()
@@ -144,14 +188,14 @@ plt.ylabel('Cases')
 plt.legend()
 plt.show()
 
-"""
+
 # Test to obtain smoothing spline of ICU inflow
 # Not sure if I am doing this right
-x = np.linspace(0, 197, 198)
+x = np.linspace(0, 191, 192)
 y = data.ICU_Inflow
 ss = UnivariateSpline(x, y, k=3) # k=3 means cubic spline
-xs = np.linspace(0, 197, 198)
+xs = np.linspace(0, 191, 192)
+# ss.set_smoothing_factor(0.5)
 plt.plot(data.date, y, 'ro', ms=5)
 plt.plot(data.date, ss(xs), 'g')
 plt.show()
-"""

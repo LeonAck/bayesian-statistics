@@ -7,7 +7,7 @@ from sklearn.model_selection import cross_val_score
 import sklearn.metrics as metrics
 
 
-class BlockingTimeSeriesSplit():
+class BlockingTimeSeriesSplit:
     """
     n_splits: number of folds in cross validation
     """
@@ -31,6 +31,28 @@ class BlockingTimeSeriesSplit():
             stop = start + k_fold_size
             mid = int(0.8 * (stop - start)) + start
             yield indices[start: mid], indices[mid + margin: stop]
+
+
+class BlockingTimeSeriesSplitLCPS(BlockingTimeSeriesSplit):
+    # return the indices of the time series split
+    def return_split(self, X, y=None, groups=None):
+        n_samples = len(X)
+        k_fold_size = n_samples // self.n_splits
+
+        output = []
+        # margin creates delay between training and validation. Maybe interesting
+        # for predictions three/ seven days in advance
+        margin = 0
+
+        for i in range(self.n_splits):
+            start = i * k_fold_size
+            stop = start + k_fold_size
+            mid = int(0.8 * (stop - start)) + start
+            dict_indices = {"train": [start, mid], "validation": [mid + margin, stop]}
+
+            output.append(dict_indices)
+
+        return output
 
 
 # Below I made an own class to do a grid search to find the best value for
@@ -61,7 +83,6 @@ class GridSearchOwn:
         # value of the evaluation metric
         self.best_param = max(self.score, key=self.score.get)
 
-
 # Function to calculate performance metrics
 def perf_metrics(y_true, y_pred):
     rsquared = 1 - sum((np.exp(y_true) - np.exp(y_pred))**2)/sum((np.exp(y_true) - np.exp(y_true).mean())**2)
@@ -72,3 +93,4 @@ def perf_metrics(y_true, y_pred):
     wape = sum(abs(np.exp(y_true) - np.exp(y_pred))) / sum(np.exp(y_true))
 
     return([rsquared, me, rmse, mae, mape, wape])
+

@@ -7,7 +7,7 @@ Op basis van deze link https://machinelearningmastery.com/ridge-regression-with-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.linear_model import Ridge, Lasso, PoissonRegressor, ElasticNet
+from sklearn.linear_model import Ridge, Lasso, ElasticNet
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
 
@@ -16,7 +16,6 @@ from sklearn.model_selection import GridSearchCV
 import sys
 sys.path.append("Python")
 from cross_validation import BlockingTimeSeriesSplit, GridSearchOwn, perf_metrics
-#from Models_LCPS import rolling_pred_testset, LCPS
 
 # Load data
 master = pd.read_csv("Data/master.csv", index_col=0)  # Regressors not lagged (=unrealistic)
@@ -31,8 +30,6 @@ X = np.delete(data.values, 0, axis=1)
 
 # Keep ICU column for y
 y = data.values[:, 0]
-
-# save weekdays for models michiel
 
 
 # We standardize the data, since this is required for the Ridge model.
@@ -118,14 +115,15 @@ search_ridge = GridSearchCV(Ridge(), grid, scoring='neg_mean_absolute_error',
 search_ridge.fit(X_train, y_train)
 print("Ridge lambda: \n", search_ridge.best_params_['alpha'])
 
-# Graph with hyperparameter estimates
+# Graph with hyperparameter estimates in article
 lambda_ridge_scores = search_ridge.cv_results_['mean_test_score']
 plt.plot(grid['alpha'], lambda_ridge_scores,
          linewidth=3, label='Ridge Cross-Validation')
-plt.xlabel('Alpha')
+plt.xlabel('Lambda')
 plt.ylabel('Score')
 plt.rcParams.update({'font.size': 10})
 plt.legend()
+plt.savefig("Images/cv_lasso.png")
 plt.show()
 
 # Define Ridge model with hyper parameter
@@ -175,15 +173,16 @@ search_elastic = GridSearchCV(ElasticNet(), grid, scoring='neg_mean_absolute_err
 search_elastic.fit(X_train, y_train)
 print("Elastic Net lambda: \n", search_elastic.best_params_['alpha'])
 
-# Graph with hyperparameter estimates
+# Graph with hyperparameter estimates in article 2
 lambda_elastic_scores = search_elastic.cv_results_['mean_test_score']
 #plt.plot(grid['alpha'], lambda_lasso_scores,
 #         linewidth=3, label='Lasso Cross-Validation')
 plt.plot(grid['alpha'], lambda_elastic_scores,
          linewidth=3, label='Elastic Net Cross-Validation')
-plt.xlabel('Alpha')
+plt.xlabel('Lambda')
 plt.ylabel('Score')
 plt.legend()
+plt.savefig("Images/cv_lasso_elastic.png")
 plt.show()
 
 # Define Elastic Net model with hyper parameter
@@ -201,7 +200,7 @@ print("Elastic Net Coefficients: \n", coef_elastic[abs(coef_elastic['Coefficient
 coef = np.insert(np.array(coef_ridge), 2, coef_lasso['Coefficient'], 1)
 coef = np.insert(np.array(coef), 3, coef_elastic['Coefficient'], 1)
 coef = pd.DataFrame(coef)
-coef
+
 
 ### Predictions
 
@@ -368,21 +367,42 @@ print(perf)
 """
 
 
-# Graph of predictions
+# Graph of predictions in paper 1
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test),
-         'k--', linewidth=2, label='ICU Admissions')
-#plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lcps_oneday),
-#         '-', linewidth=3, label='LCPS Model')
+         'k-', linewidth=2, label='ICU Admissions')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lcps_oneday),
+         '--', linewidth=2, label='LCPS Model')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_sma7),
-         '-', linewidth=3, label='SMA(7)')
+         '--', linewidth=2, label='SMA(7)')
 plt.xticks(data.index[np.quantile(range(int(X.shape[0] * split_pct),len(data)), np.linspace(0, 1, 5)).astype(int)])
 plt.yticks(np.linspace(35, 70, 8))
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
+plt.savefig('Images/pred_sma3_7_lcps.png')
 plt.show()
 
+
+# Graph of predictions in paper 2
+
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test),
+         'k-', linewidth=2, label='ICU Admissions')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_ridge),
+         '--', linewidth=2, label='Ridge Model')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lasso),
+         '--', linewidth=2, label='Lasso Model')
+plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_elastic),
+         '--', linewidth=2, label='Elastic Net Model')
+plt.xticks(data.index[np.quantile(range(int(X.shape[0] * split_pct),len(data)), np.linspace(0, 1, 5)).astype(int)])
+plt.yticks(np.linspace(35, 70, 8))
+plt.xlabel('Time')
+plt.ylabel('Admissions')
+#plt.rc('font', size=10)
+plt.legend()
+plt.savefig('Images/pred_ridge_lasso_elastic.png')
+plt.show()
 """
+
 # Graph of predictions
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test),
          linewidth=2, label='ICU Admissions')
@@ -392,24 +412,6 @@ plt.xticks(data.index[np.quantile(range(int(X.shape[0] * split_pct),len(data)), 
 plt.yticks(np.linspace(35, 70, 8))
 plt.xlabel('Time')
 plt.ylabel('Admissions')
-plt.legend()
-plt.show()
-"""
-
-# Graph of predictions
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test),
-         'k--', linewidth=2, label='ICU Admissions')
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_ridge),
-         '-', linewidth=3, label='Ridge Model')
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_lasso),
-         '-', linewidth=3, label='Lasso Model')
-plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat_elastic),
-         '-', linewidth=3, label='Elastic Net Model')
-plt.xticks(data.index[np.quantile(range(int(X.shape[0] * split_pct),len(data)), np.linspace(0, 1, 5)).astype(int)])
-plt.yticks(np.linspace(35, 70, 8))
-plt.xlabel('Time')
-plt.ylabel('Admissions')
-#plt.rc('font', size=10)
 plt.legend()
 plt.show()
 
