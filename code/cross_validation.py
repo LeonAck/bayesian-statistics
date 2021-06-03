@@ -1,6 +1,6 @@
 import numpy as np
 import numpy.linalg as LA
- import pandas as pd
+import pandas as pd
 
 df = pd.read_csv("data_by_year_o.csv")
 
