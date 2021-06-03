@@ -26,14 +26,15 @@ rel_vars = ['ICU_Inflow', 'ICU_Inflow_SMA3d', 'ICU_Inflow_SMA7d',
             'Monday', 'Tuesday', 'Wednesday',
             'Thursday', 'Friday', 'Saturday']
 """
-rel_vars = ['ICU_Inflow', 'Hosp_Inflow',
+rel_vars = ['ICU_Inflow',
+            'Hosp_Inflow',
             'Tested', 'Cases', 'Cases_Pct',
-            'RNA', 'Vacc_Est',
+            'RNA',
+            'Vacc_Est',
             'Monday', 'Tuesday', 'Wednesday',
             'Thursday', 'Friday', 'Saturday']
 data = master.copy()
 data = data[rel_vars]
-
 
 # Take logarithm of variables except for the following
 vars_excl = ['Monday', 'Tuesday', 'Wednesday',

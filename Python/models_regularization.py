@@ -7,20 +7,16 @@ Op basis van deze link https://machinelearningmastery.com/ridge-regression-with-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.linear_model import Ridge, Lasso, PoissonRegressor, ElasticNet
+from sklearn.linear_model import Ridge, Lasso, ElasticNet
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
-
-# (Roel) I don't know why but I need to add the code below
-# to be able to import cross_validation
 import sys
-sys.path.append("Python")
+sys.path.append("Python") #Add folder with Python code to directory
 from cross_validation import BlockingTimeSeriesSplit, GridSearchOwn, perf_metrics
-#from Models_LCPS import rolling_pred_testset, LCPS
+
 
 # Load data
-master = pd.read_csv("Data/master.csv", index_col=0)  # Regressors not lagged (=unrealistic)
-data = pd.read_csv("Data/data.csv", index_col=0)  # Regressors lagged 1 timeperiod
+data = pd.read_csv("Data/data.csv", index_col=0)
 
 ##### Create y, X and train/test split ################
 
@@ -346,6 +342,15 @@ print("Test fit performance: \n", perf_test_pred)
 
 keys_ridge = ['Ridge 1', 'Ridge 2', 'Ridge 3', 'Ridge 4', 'Ridge 5', 'Ridge 6', 'Ridge 7']
 perf_test_pred[keys_ridge]
+
+perf_test = {'Ridge_1': perf_metrics(y_test, yhat[yhat_ridge_1]),
+        'Lasso': perf_metrics(y_test, yhat_lasso),
+        'Elastic Net': perf_metrics(y_test, yhat_elastic),
+        }
+perf_test = pd.DataFrame(perf_test)
+perf_test = round(perf_test, 2)
+perf_test.index = ['R Squared', 'ME', 'RMSE', 'MAE', 'MAPE', 'WAPE']
+print("Test fit performance: \n", perf_test)
 
 """
 # Compare predicted results to y_test for 3 day ahead predictions
