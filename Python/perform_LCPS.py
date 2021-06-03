@@ -39,12 +39,13 @@ splits_list = btscv.return_split(y_train)
 grid = np.arange(0, 101, 0.5)
 
 
-opt_lambda = gridsearch_lcps(y, w, splits_list, grid=grid)
+opt_lambda, average_mae_per_par = gridsearch_lcps(y, w, splits_list, grid=grid)
 print(opt_lambda)
 
 filename = 'opt_lambda_LCPS.txt'
 with open(filename, 'w') as file_object:
     file_object.write(str(opt_lambda))
+    file_object.write(str(average_mae_per_par))
 
 """
 y_pred = rolling_pred_testset(LCPS, y_train, y_test, w_train, w_test, t=1)

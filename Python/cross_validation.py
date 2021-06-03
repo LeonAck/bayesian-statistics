@@ -38,7 +38,6 @@ class BlockingTimeSeriesSplitLCPS(BlockingTimeSeriesSplit):
     def return_split(self, X, y=None, groups=None):
         n_samples = len(X)
         k_fold_size = n_samples // self.n_splits
-        indices = np.arange(n_samples)
 
         output = []
         # margin creates delay between training and validation. Maybe interesting
@@ -95,7 +94,3 @@ def perf_metrics(y_true, y_pred):
 
     return([rsquared, me, rmse, mae, mape, wape])
 
-# Define
-def cross_val_LCPS(y, w, splits_ind):
-    for dict in splits_ind:
-        return None

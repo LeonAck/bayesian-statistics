@@ -135,36 +135,36 @@ def gridsearch_lcps(y, w, splits_list, grid=None, t=1):
     optimal value of lambda
     """
     # repeat loop for every parameter in grid
-    average_mae_dict = dict()
+    average_mae_per_par = dict()
     for parameter in grid:
 
         mae_list = []
+
         # for loop for each set of indices per fold
-
-
         for index_dict in splits_list:
             # perform rolling predictions using train set on the validation set
             y_pred = rolling_pred_testset(LCPS,
-                                 y[index_dict["train"][0]:
-                                   index_dict["train"][1]],
-                                 y[index_dict["validation"][0]:
-                                   index_dict["validation"][1]],
-                                 w[index_dict["train"][0]:
-                                   index_dict["train"][1]],
-                                 w[index_dict["validation"][0]:
-                                   index_dict["validation"][1]],
-                                 t=t, gamma=parameter)
+                                          y[index_dict["train"][0]:
+                                            index_dict["train"][1]],
+                                          y[index_dict["validation"][0]:
+                                            index_dict["validation"][1]],
+                                          w[index_dict["train"][0]:
+                                            index_dict["train"][1]],
+                                          w[index_dict["validation"][0]:
+                                            index_dict["validation"][1]],
+                                          t=t, gamma=parameter)
 
             # add the mean absolute error on validation set to the list
             mae_list.append(mean_absolute_error(
                 np.exp(y[
-                           index_dict["validation"][0]:
-                            index_dict["validation"][1]]),
+                       index_dict["validation"][0]:
+                       index_dict["validation"][1]]),
                 np.exp(y_pred)))
         print("mae-list", mae_list)
         # add average mae for parameter to dict
-        average_mae_dict["{}".format(parameter)] = np.mean(mae_list)
+        average_mae_per_par["{}".format(parameter)] = np.mean(mae_list)
 
     # return parameter with average mae
-    print(average_mae_dict)
-    return min(average_mae_dict, key=average_mae_dict.get)
+    print(average_mae_per_par)
+    return min(average_mae_per_par, key=average_mae_per_par.get), \
+           average_mae_per_par
