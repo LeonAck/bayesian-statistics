@@ -55,45 +55,6 @@ class LCPS:
         self.s = np.array(s.value)
 
 
-def test(method, y_train, y_test, w_train, w_test):
-    # create train test split
-    algo = method(y_train, w_train, gamma=10)
-    algo.solve()
-    print("s", algo.s)
-    print("algo_x", algo.x)
-    print("y", np.log(y_train))
-
-    pred_y = []
-    for t in range(1, len(y_test) + 1):
-        pred_y.append(algo.predict(algo.x, algo.s, w_train, t=t))
-
-    # exp back to log to insert into formula
-    print(perf_metrics(np.log(y_test), np.log(pred_y)))
-
-
-# test(LCPS)
-
-"""
-def rolling_pred(method, y, w, t):
-    """"""
-    Rolling predctions for model. Uses data up to one day To predict t-day
-    prediction. Then moves up one day to and predicts t-day from that day
-    """"""
-    y_pred = []
-
-    for i in range(6, len(y) - 7):
-        y_train = y[:i]
-        w_train = w[:i]
-        print(i, y_train)
-        algo = method(y_train, w_train, gamma=10)
-        algo.solve()
-
-        y_pred.append(algo.predict(algo.x, algo.s, w_train, t=t))
-    print(y_pred)
-    return y_pred
-"""
-
-
 def rolling_pred_testset(method, y_train, y_test, w_train, w_test, t=1, gamma=10):
     """
     Function to perform a rolling prediction for values in the test set.
