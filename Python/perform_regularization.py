@@ -120,7 +120,7 @@ lambda_ridge_scores = search_ridge.cv_results_['mean_test_score']
 # Graph with cross-validation results
 plt.plot(grid['alpha'], lambda_ridge_scores,
          linewidth=3, label='Ridge Cross-Validation')
-plt.xlabel('Alpha')
+plt.xlabel('Lambda')
 plt.ylabel('Score')
 plt.legend()
 plt.show()
@@ -154,7 +154,7 @@ lambda_lasso_scores = search_lasso.cv_results_['mean_test_score']
 # Graph with hyperparameter estimates
 plt.plot(grid['alpha'], lambda_lasso_scores,
          linewidth=3, label='Lasso Cross-Validation')
-plt.xlabel('Alpha')
+plt.xlabel('Lambda')
 plt.ylabel('Score')
 plt.legend()
 plt.show()
@@ -190,7 +190,7 @@ plt.plot(grid['alpha'], lambda_lasso_scores,
          linewidth=3, label='Lasso Cross-Validation')
 plt.plot(grid['alpha'], lambda_elastic_scores,
          linewidth=3, label='Elastic Net Cross-Validation')
-plt.xlabel('Alpha')
+plt.xlabel('Lambda')
 plt.ylabel('Score')
 plt.legend()
 plt.show()
@@ -264,6 +264,7 @@ perf_test = pd.DataFrame({'SMA(1)':perf_metrics(y_test, yhat['sma1']),
         'SMA(3)':perf_metrics(y_test, yhat['sma3']),
         'SMA(7)':perf_metrics(y_test, yhat['sma7']),
         'LCPS': perf_metrics(y_test, yhat['lcps']),
+        'LCPS*': perf_metrics(y_test[np.arange(len(y_test))!=9], [x for i,x in enumerate(yhat['lcps']) if i!=9]),
         'Ridge': perf_metrics(y_test, yhat['ridge']),
         'Lasso': perf_metrics(y_test, yhat['lasso']),
         'Elastic Net': perf_metrics(y_test, yhat['elastic']),
@@ -284,13 +285,13 @@ print(perf_test.to_latex())
 
 # Graph of LCPS and SMA(7) predictions
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test),
-         'k--', linewidth=2, label='ICU Admissions')
+         'k-', linewidth=2, label='ICU Admissions')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat['lcps']),
-         '-', linewidth=3, label='LCPS Model')
+         '--', linewidth=3, label='LCPS Model')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat['sma7']),
-         '-', linewidth=3, label='SMA(7)')
+         '--', linewidth=3, label='SMA(7)')
 plt.xticks(data.index[np.quantile(range(int(X.shape[0] * split_pct),len(data)), np.linspace(0, 1, 5)).astype(int)])
-plt.yticks(np.linspace(35, 70, 8))
+plt.yticks(np.linspace(35, 85, 11))
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
@@ -299,15 +300,15 @@ plt.show()
 
 # Graph of Ridge, Lasso and Elastic Net predictions
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(y_test),
-         'k--', linewidth=2, label='ICU Admissions')
+         'k-', linewidth=2, label='ICU Admissions')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat['ridge']),
-         '-', linewidth=3, label='Ridge Model')
+         '--', linewidth=3, label='Ridge Model')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat['lasso']),
-         '-', linewidth=3, label='Lasso Model')
+         '--', linewidth=3, label='Lasso Model')
 plt.plot(data.index[int(X.shape[0] * split_pct):], np.exp(yhat['elastic']),
-         '-', linewidth=3, label='Elastic Net Model')
+         '--', linewidth=3, label='Elastic Net Model')
 plt.xticks(data.index[np.quantile(range(int(X.shape[0] * split_pct),len(data)), np.linspace(0, 1, 5)).astype(int)])
-plt.yticks(np.linspace(35, 70, 8))
+plt.yticks(np.linspace(35, 85, 11))
 plt.xlabel('Time')
 plt.ylabel('Admissions')
 plt.legend()
