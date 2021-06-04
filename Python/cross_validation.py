@@ -3,14 +3,14 @@ Code from https://hub.packtpub.com/cross-validation-strategies-for-time-series-f
 To make BlockingTimeSeriesSplit
 """
 import numpy as np
-from sklearn.model_selection import cross_val_score
 import sklearn.metrics as metrics
 
 
 class BlockingTimeSeriesSplit:
     """
-    n_splits: number of folds in cross validation
+    Class for Blocking time series split with the API for skicit learn's GridSearchCV function.
     """
+
     def __init__(self, n_splits):
         self.n_splits = n_splits
 
@@ -19,17 +19,26 @@ class BlockingTimeSeriesSplit:
 
     def split(self, X, y=None, groups=None):
         n_samples = len(X)
+
+        # determine size per fold
         k_fold_size = n_samples // self.n_splits
         indices = np.arange(n_samples)
 
-        # margin creates delay between training and validation. Maybe interesting
-        # for predictions three/ seven days in advance
+        # margin creates delay between training and validation. Kept at zero.
+        # The validation set immediately follows the training set.
         margin = 0
 
         for i in range(self.n_splits):
+            # determine start index of each fold
             start = i * k_fold_size
+
+            # determine stop index per fold
             stop = start + k_fold_size
+
+            # determine index of boundary between training and validation set in a fold i
             mid = int(0.8 * (stop - start)) + start
+
+            # obtain generator object of the indices
             yield indices[start: mid], indices[mid + margin: stop]
 
 
@@ -39,49 +48,29 @@ class BlockingTimeSeriesSplitLCPS(BlockingTimeSeriesSplit):
         n_samples = len(X)
         k_fold_size = n_samples // self.n_splits
 
-        output = []
+        list_of_dicts_indices = []
         # margin creates delay between training and validation. Maybe interesting
         # for predictions three/ seven days in advance
         margin = 0
 
         for i in range(self.n_splits):
+            # determine start index of each fold
             start = i * k_fold_size
+
+            # determine stop index per fold
             stop = start + k_fold_size
+
+            # determine index of boundary between training and validation set in a fold i
             mid = int(0.8 * (stop - start)) + start
+
+            # save indices in dictionary
             dict_indices = {"train": [start, mid], "validation": [mid + margin, stop]}
 
-            output.append(dict_indices)
+            # add dictionary to list
+            list_of_dicts_indices.append(dict_indices)
 
-        return output
+        return list_of_dicts_indices
 
-
-# Below I made an own class to do a grid search to find the best value for
-# the hyperparamter lambda (hier alpha)
-class GridSearchOwn:
-    """
-    Class to perform grid search cross validation
-    """
-    def __init__(self, grid, cv, X, y, model):
-        """Initialize attributes"""
-        self.grid = grid
-        self.cv = cv
-        self.X = X
-        self.y = y
-        
-        # create dictionary with model type to call later
-        self.model_dict = {"model1": model}
-
-    def perform_search(self):
-        """For every value in grid compute the evaluation metric"""
-        self.score = dict()
-        for par in self.grid:
-            model = self.model_dict["model1"](alpha=par)
-            self.score["{}".format(par)] = np.mean(cross_val_score(model, self.X, self.y,
-                        scoring='neg_mean_absolute_error', cv=self.cv, n_jobs=-1))
-
-        # save best value for the hyper parameter corresponding to the least negative
-        # value of the evaluation metric
-        self.best_param = max(self.score, key=self.score.get)
 
 # Function to calculate performance metrics
 def perf_metrics(y_true, y_pred):

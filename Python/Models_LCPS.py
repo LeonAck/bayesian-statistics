@@ -1,14 +1,10 @@
 """File to copy the LCPS ICU admission programme"""
 import cvxpy as cp
 import numpy as np
-import sys
 from sklearn.metrics import mean_absolute_error
 
-sys.path.append("Python")
-from cross_validation import perf_metrics
 
-
-class LCPS:
+class LCPSModel:
     """
     Class to recreate LCPS model
     Minimization with trend penalty term
@@ -55,7 +51,7 @@ class LCPS:
         self.s = np.array(s.value)
 
 
-def rolling_pred_testset(method, y_train, y_test, w_train, w_test, t=1, gamma=10):
+def rolling_pred_LCPS(method, y_train, y_test, w_train, w_test, t=1, gamma=10):
     """
     Function to perform a rolling prediction for values in the test set.
     Model is first estimated on training set, but data points from the test
@@ -86,7 +82,7 @@ def rolling_pred_testset(method, y_train, y_test, w_train, w_test, t=1, gamma=10
     return y_pred
 
 
-def gridsearch_lcps(y, w, splits_list, grid=None, t=1):
+def gridsearch_LCPS(y, w, splits_list, grid=None, t=1):
     """
     Find the optimal value for the smoothing parameter lambda by a block-
     time series split. We optimzie based on the mean absolute error of rolling
@@ -104,7 +100,7 @@ def gridsearch_lcps(y, w, splits_list, grid=None, t=1):
         # for loop for each set of indices per fold
         for index_dict in splits_list:
             # perform rolling predictions using train set on the validation set
-            y_pred = rolling_pred_testset(LCPS,
+            y_pred = rolling_pred_LCPS(LCPSModel,
                                           y[index_dict["train"][0]:
                                             index_dict["train"][1]],
                                           y[index_dict["validation"][0]:
@@ -113,7 +109,7 @@ def gridsearch_lcps(y, w, splits_list, grid=None, t=1):
                                             index_dict["train"][1]],
                                           w[index_dict["validation"][0]:
                                             index_dict["validation"][1]],
-                                          t=t, gamma=parameter)
+                                       t=t, gamma=parameter)
 
             # add the mean absolute error on validation set to the list
             mae_list.append(mean_absolute_error(
@@ -121,12 +117,12 @@ def gridsearch_lcps(y, w, splits_list, grid=None, t=1):
                        index_dict["validation"][0]:
                        index_dict["validation"][1]]),
                 np.exp(y_pred)))
-        print("mae-list", mae_list)
+
         # add average mae for parameter to dict
         average_mae_per_par["{}".format(parameter)] = np.mean(mae_list)
 
     # return parameter with average mae
-    print(average_mae_per_par)
+
     return min(average_mae_per_par, key=average_mae_per_par.get), \
            average_mae_per_par
 

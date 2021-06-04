@@ -29,8 +29,8 @@ from sklearn.linear_model import Ridge, Lasso, ElasticNet
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
 import sys
-sys.path.append("Python") #Add folder with Python code to directory
-from cross_validation import BlockingTimeSeriesSplit, GridSearchOwn, perf_metrics
+sys.path.append("Python") # Add folder with Python code to directory
+from cross_validation import BlockingTimeSeriesSplit, perf_metrics
 
 
 ##### Load data #####
@@ -66,52 +66,24 @@ n_train = len(y_train)      # Number of days in train set
 n_test = len(y_test)        # Number of days in test set
 
 
-#####  Hyperparameter Search #####
-
-# Define grid for hyperparameter search
-grid = dict()
-grid['alpha'] = np.arange(0.01, 100, 0.1)
-
-# Note that lambda and alpha are confusingly used as names for the same parameter.
-# This is because the Ridge() function only accepts a parameter alpha.
-
-# Define model evaluation method with time series
-# We use cross-validation with 5 splits
-# Code is found in cross_validation.py
-btscv = BlockingTimeSeriesSplit(n_splits=5)
-
-
-### Compare self-programmed grid search to GridSearchCV from sklearn
-
-# Own grid search. Code is found in cross_validation.py
-own_grid = GridSearchOwn(grid=grid['alpha'], cv=btscv, X=X_train, y=y_train,
-                         model=Ridge)
-own_grid.perform_search()
-
-# Obtain best lambda
-lambda_own = own_grid.best_param
-print("Lambda from own grid search:", lambda_own)
-
-# Grid search from sklearn
-search = GridSearchCV(Ridge(), grid, scoring='neg_mean_absolute_error',
-                      cv=btscv, n_jobs=-1, return_train_score=True)
-search.fit(X_train, y_train)
-
-# Obtain best lambda
-lambda_sklearn = search.best_params_['alpha']
-print("Lambda from sklearn grid search:", lambda_sklearn)
-
-# Note the two lambdas should be equal
-
-
 ##### Regularization Models #####
 
 ### Define Ridge model
 
 # Hyperparameter search by means of cross-validation
+# Define grid for hyperparameter search
+grid = dict()
 grid['alpha'] = np.arange(3, 30, 0.01)
+
+# Define model evaluation method with time series
+# We use cross-validation with 5 splits
+btscv = BlockingTimeSeriesSplit(n_splits=5)
+
+# perform grid search for hyperparameter
 search_ridge = GridSearchCV(Ridge(), grid, scoring='neg_mean_absolute_error',
                             cv=btscv, n_jobs=-1, return_train_score=True)
+
+# fit the  Ridge model based on the optimal hyperparameter
 search_ridge.fit(X_train, y_train)
 
 # Save cross-validation score results
